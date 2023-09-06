@@ -1,5 +1,5 @@
 
-export class Ship {
+class Ship {
     constructor(length) {
         this.length = length;
         this.lives = length;
@@ -10,3 +10,9 @@ export class Ship {
         this.isSunk = true;
     }
 }
+
+function initialiseShip() {
+    return new Ship(4)
+}
+
+export {initialiseShip, Ship}

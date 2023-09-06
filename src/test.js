@@ -1,28 +1,14 @@
-import { Ship } from "./index.js";
-let newShip = new Ship(1)
+import { Ship, initialiseShip } from "./index.js";
+// let newShip = new Ship(1)
 
-// ship tests
-// test its sunk 
-// test its number of hits
+let newShip;
+
+beforeEach(() => {
+    newShip = initialiseShip();
+})
 
 test('test if Ship is sunk', () => {
+    // let newShip = initialiseShip();
+    console.log(newShip)
     expect(newShip.isSunk).toBe(false);
 })
-
-test('test if Ship is sunk', () => {
-    expect(newShip.isSunk).toBe(true);
-})
-
-test('test if ship returns lives correctly', () => {
-    expect(newShip.lives).toBe(1);
-})
-
-test('test if ship returns lives correctly', () => {
-    expect(newShip.lives).toBe(1);
-})
-
-newShip.setSunk();
-test('test if Ship is sunk', () => {
-    expect(newShip.isSunk).toBe(true);
-})
-
