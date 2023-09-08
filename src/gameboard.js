@@ -20,11 +20,9 @@ class Gameboard {
                 }
                 newGrid.push(row)
             }
-            // for some reason nwGrid is an empty grid, rather than being populated with stuff
             return newGrid
         }
         this.grid = createGrid();
-        this.over = false;
     }
 
 
@@ -50,12 +48,22 @@ class Gameboard {
             case 'horizontal':
                 //loop for length and check if out of bounds
                 //but then if any of them are bad, then cancel
+                for (let i = 0; i< length; i++) {
+                    if (this.isOutOfBounds(this.grid[startRow][startCol + i])) return
+                }
+
 
                 // else, loop again and put them in
                 // do something at the grid square,
                 // and then put stuff along the row (occupy columns of the same row)
                 // maybe give some information, like ship ID
-                this.grid[startRow][startCol] = 'occupied'
+                console.log(startRow)
+                for (let i = 0; i< length; i++) {
+                    // resolve error here. not sure what it is
+                //    console.log(this.grid[startRow][startCol + i])
+                   this.grid[startRow][startCol + i].hasShip = true;
+                }
+
 
                 break
 
@@ -66,6 +74,10 @@ class Gameboard {
                 this.grid
                 break
         }
+    }
+
+    getPosition(col, row) {
+        return this.grid[row][col]
     }
 
 }
