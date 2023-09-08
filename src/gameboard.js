@@ -25,6 +25,7 @@ class Gameboard {
             return newGrid
         }
         this.grid = createGrid();
+        this.guessedCoords = []
     }
 
 
@@ -58,8 +59,8 @@ class Gameboard {
                 //loop for length and check if out of bounds
                 //but then if any of them are bad, then cancel
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(startRow, startCol + i)) return
-                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'ship already at that position'
+                    if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds'
+                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied'
                 }
 
                 // else, loop again and put them in
@@ -96,8 +97,26 @@ class Gameboard {
         return this.grid[row][col].ship
     }
 
+    checkMissedHit(col, row) {
+        return this.grid[row][col].missedHit
+    }
+
+    checkPositionWasHit(col, row) {
+        return this.getShip(col, row).wasGuessed
+    }
+
+    checkWasGuessed(col, row) {
+        return this.grid[row][col].wasGuessed
+    }
+
     receiveAttack(col, row) {
-        // first, check if there is a ship there
+        // first, check if position is already guessed
+        if (this.checkWasGuessed(col, row)) return 'already attacked';
+        // if not guessed, then mark as guessed
+        this.getPosition(col, row).wasGuessed = true;
+        this.guessedCoords.push([col, row])
+
+        // if not, check if there is a ship there
         if (this.checkShipExists(col, row)) {
             // if there is, then identify the ship
             // then hit the ship

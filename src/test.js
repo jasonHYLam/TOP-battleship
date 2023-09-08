@@ -43,10 +43,13 @@ test('ship receives a hit with receiveAttack', () => {
     let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
     newGameboard.receiveAttack(1,3)
-    // i think this is a copy... but surely not!
+    console.log('a')
     let hitShip = newGameboard.getShip(1,3)
+    console.log(hitShip)
+
     expect(hitShip.hits).toBe(1)
 })
+
 test('miss a hit with receiveAttack', () => {
     let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
@@ -58,13 +61,10 @@ test('miss a hit with receiveAttack', () => {
 test('check that using placeShip() on the same coordinate is not allowed', () => {
     let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
-    console.log(
-        newGameboard.placeShip(4, 'horizontal', [1,3])
-    )
     expect(
         newGameboard.placeShip(4, 'horizontal', [1,3])
     )
-    .toBe('ship already at that position')
+    .toBe('position already occupied')
 })
 
 test('check that using receiveAttack() on the same coordinate is not allowed', () => {
@@ -72,8 +72,8 @@ test('check that using receiveAttack() on the same coordinate is not allowed', (
     newGameboard.receiveAttack(8,3)
     expect(
         newGameboard.receiveAttack(8,3)
-    .toBe()
     )
+    .toBe('already attacked')
 })
 
 test('store all missed hit coordinates', () => {
@@ -82,6 +82,14 @@ test('store all missed hit coordinates', () => {
     newGameboard.receiveAttack(8,3)
     newGameboard.receiveAttack(1,3)
     newGameboard.receiveAttack(5,5)
+    
+    //work on storing coordinates
+    expect(newGameboard.guessedCoords).toStrictEqual([[8,3],[1,3],[5,5]])
 })
-// test if ship exceeds gameboard
-// test if ship is not horizontal or vertical
+
+
+// maybe make another test, testing trying to attack twice, and then only storing one instance of coordinate
+
+
+// report that all ships are sunk
+//need to ensure that a ship is sunk correctly// test if hitting it 4 times will make it sunk
