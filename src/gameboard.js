@@ -4,6 +4,8 @@ class Space {
     constructor() {
         this.hasShip = false;
         this.wasGuessed = false;
+        this.missedHit = false;
+        this.ship = null;
     }
 }
 class Gameboard {
@@ -30,15 +32,22 @@ class Gameboard {
     // by id?
 
     isOutOfBounds(col, row) {
-        // do i return, or do i cancel something?
-        if (col > 9 || row > 9) return true
-
+        if (col > 9 || row > 9) return true;
+        return false;
     }
+
+
+    checkIfAlreadyPlaced(col, row) {
+        if (this.grid[row][col].hasShip === true) return true;
+        return false;
+    }
+
     // maybe its better to use horizontal and vertical
     placeShip(length, orientation, [startCol, startRow]) {
 
         // test if start coord is out of bounds
         if (this.isOutOfBounds(startCol, startRow)) return 
+
 
         let newShip = initialiseShip(length)
         if (!newShip) return
@@ -49,19 +58,17 @@ class Gameboard {
                 //loop for length and check if out of bounds
                 //but then if any of them are bad, then cancel
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(this.grid[startRow][startCol + i])) return
+                    if (this.isOutOfBounds(startRow, startCol + i)) return
+                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'ship already at that position'
                 }
-
 
                 // else, loop again and put them in
                 // do something at the grid square,
                 // and then put stuff along the row (occupy columns of the same row)
                 // maybe give some information, like ship ID
-                console.log(startRow)
                 for (let i = 0; i< length; i++) {
-                    // resolve error here. not sure what it is
-                //    console.log(this.grid[startRow][startCol + i])
                    this.grid[startRow][startCol + i].hasShip = true;
+                   this.grid[startRow][startCol + i].ship = newShip;
                 }
 
 
@@ -78,6 +85,28 @@ class Gameboard {
 
     getPosition(col, row) {
         return this.grid[row][col]
+    }
+
+    checkShipExists(col, row) {
+        return this.grid[row][col].hasShip
+    }
+
+
+    getShip(col, row) {
+        return this.grid[row][col].ship
+    }
+
+    receiveAttack(col, row) {
+        // first, check if there is a ship there
+        if (this.checkShipExists(col, row)) {
+            // if there is, then identify the ship
+            // then hit the ship
+            this.getShip(col, row).hit()
+        }
+        // if there isn't a ship, then mark the place with missedHit
+        else {
+            this.getPosition(col, row).missedHit = true;
+        }
     }
 
 }
