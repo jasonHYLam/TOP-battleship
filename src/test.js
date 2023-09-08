@@ -2,10 +2,12 @@ import { Ship, initialiseShip } from "./ship.js";
 import { Gameboard } from "./gameboard.js";
 
 let newShip;
+let newGameboard
 
 beforeEach(() => {
     // newShip = new Ship(4)
     newShip = initialiseShip(4)
+    newGameboard = new Gameboard()
 })
 
 test('test invalid Ship construction', () => {
@@ -30,7 +32,6 @@ test('test if Ship is sunk', () => {
 // and what do i even assert for? what value can i even expect?
 
 test('place ship in coordinate', () => {
-    let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
     expect(newGameboard.getPosition(1,3).hasShip).toBe(true)
     expect(newGameboard.getPosition(2,3).hasShip).toBe(true)
@@ -40,10 +41,8 @@ test('place ship in coordinate', () => {
 })
 
 test('ship receives a hit with receiveAttack', () => {
-    let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
     newGameboard.receiveAttack(1,3)
-    console.log('a')
     let hitShip = newGameboard.getShip(1,3)
     console.log(hitShip)
 
@@ -51,7 +50,6 @@ test('ship receives a hit with receiveAttack', () => {
 })
 
 test('miss a hit with receiveAttack', () => {
-    let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
     newGameboard.receiveAttack(8,3)
     //what to expect
@@ -59,7 +57,6 @@ test('miss a hit with receiveAttack', () => {
 })
 
 test('check that using placeShip() on the same coordinate is not allowed', () => {
-    let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
     expect(
         newGameboard.placeShip(4, 'horizontal', [1,3])
@@ -68,7 +65,6 @@ test('check that using placeShip() on the same coordinate is not allowed', () =>
 })
 
 test('check that using receiveAttack() on the same coordinate is not allowed', () => {
-    let newGameboard = new Gameboard();
     newGameboard.receiveAttack(8,3)
     expect(
         newGameboard.receiveAttack(8,3)
@@ -77,7 +73,6 @@ test('check that using receiveAttack() on the same coordinate is not allowed', (
 })
 
 test('store all missed hit coordinates', () => {
-    let newGameboard = new Gameboard();
     newGameboard.placeShip(4, 'horizontal', [1,3])
     newGameboard.receiveAttack(8,3)
     newGameboard.receiveAttack(1,3)
@@ -89,7 +84,34 @@ test('store all missed hit coordinates', () => {
 
 
 // maybe make another test, testing trying to attack twice, and then only storing one instance of coordinate
-
+test('test only one instance of a coordinate is in guessedCoords', () => {
+    newGameboard.receiveAttack(8,3)
+    newGameboard.receiveAttack(8,3)
+    expect(newGameboard.guessedCoords).toStrictEqual([[8,3]])
+})
 
 // report that all ships are sunk
+test('report all ships are sunk', () => {
+    newGameboard.placeShip(4, 'horizontal', [0,0])
+    newGameboard.placeShip(4, 'vertical', [5,5])
+
+    newGameboard.receiveAttack(0,0)
+    newGameboard.receiveAttack(0,1)
+    newGameboard.receiveAttack(0,2)
+    newGameboard.receiveAttack(0,3)
+
+    newGameboard.receiveAttack(5,5)
+    newGameboard.receiveAttack(6,5)
+    newGameboard.receiveAttack(7,5)
+    newGameboard.receiveAttack(8,5)
+
+    //now, how should the message be reported?
+    // should something be set as a property? like gameboard.isOver
+
+    expect(newGameboard.isGameOver).toBe(true)
+
+})
 //need to ensure that a ship is sunk correctly// test if hitting it 4 times will make it sunk
+
+// also, how do i know all ships are sunk?
+// maybe have a function to check all positions if there any that have hasShip and was guessed

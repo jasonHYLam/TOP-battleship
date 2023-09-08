@@ -10,8 +10,6 @@ class Space {
 }
 class Gameboard {
     constructor() {
-
-        // no idea if this works but the idea is to run this function to create a grid with 10 rows and 10 cols
         function createGrid() {
             let newGrid = [];
             for (let i = 0; i<10; i++) {
@@ -26,17 +24,13 @@ class Gameboard {
         }
         this.grid = createGrid();
         this.guessedCoords = []
+        this.isGameOver = false;
     }
-
-
-    // hmm do i need to make something to show that a space is occupied by a ship?
-    // by id?
 
     isOutOfBounds(col, row) {
         if (col > 9 || row > 9) return true;
         return false;
     }
-
 
     checkIfAlreadyPlaced(col, row) {
         if (this.grid[row][col].hasShip === true) return true;
@@ -49,12 +43,12 @@ class Gameboard {
         // test if start coord is out of bounds
         if (this.isOutOfBounds(startCol, startRow)) return 
 
-
         let newShip = initialiseShip(length)
         if (!newShip) return
 
         switch(orientation) {
             // if orientation is horizontal
+            // stuff happens from left to right
             case 'horizontal':
                 //loop for length and check if out of bounds
                 //but then if any of them are bad, then cancel
@@ -63,23 +57,30 @@ class Gameboard {
                     if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied'
                 }
 
-                // else, loop again and put them in
-                // do something at the grid square,
-                // and then put stuff along the row (occupy columns of the same row)
-                // maybe give some information, like ship ID
+                // else, loop along the row (occupy columns of the same row)
+                // at each grid square, occupy with ship ID
                 for (let i = 0; i< length; i++) {
                    this.grid[startRow][startCol + i].hasShip = true;
                    this.grid[startRow][startCol + i].ship = newShip;
                 }
-
-
                 break
 
             // if orientation is vertical
+            // ship is created from bottom to top
+            // row[0] is bottom, row[9] to top, due to the `9 - `
             case 'vertical':
-                // do something at the grid square,
+                for (let i = 0; i< length; i++) {
+                    if (this.isOutOfBounds(9 - startRow + i, startCol)) return 'out of bounds'
+                    if (this.checkIfAlreadyPlaced(9 - startRow + i, startCol)) return 'position already occupied'
+                }
+
                 // and then put stuff along the column (occupy rows of the same column)
-                this.grid
+                for (let i = 0; i< length; i++) {
+                    console.log(9 - startRow+i)
+                    // console.log([9 - startRow + i][startCol])
+                    this.grid[9 - startRow + i][startCol].hasShip = true;
+                    this.grid[9 - startRow + i][startCol].ship = newShip;
+                }
                 break
         }
     }
@@ -127,16 +128,5 @@ class Gameboard {
             this.getPosition(col, row).missedHit = true;
         }
     }
-
 }
-
-// should be able to place ships at specific coordinates
-// so this gameboard needs coordinates
-// i guess i should define a start and end coordinate, and
-// ignore if they aren't horizontal or vertical or one block
-
-//how do i test these things? what needs testing?
-// what does it mean by public methods?
-
-
 export {Gameboard}
