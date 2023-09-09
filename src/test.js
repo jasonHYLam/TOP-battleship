@@ -1,6 +1,6 @@
 import { Ship, initialiseShip } from "./ship.js";
 import { Gameboard } from "./gameboard.js";
-import { Player } from "./player.js"
+import { Player, Computer } from "./player.js"
 
 // let's be clear; 
 // the first argument refers to the column number. 
@@ -159,4 +159,5 @@ test('player attacks computer', () => {
 //how would i test turn changing behaviour?
 // maybe i need a gameController.js...
 test('when player attacks, turn goes to computer who attacks', () => {
+
 })
