@@ -8,6 +8,10 @@ class Space {
         this.ship = null;
     }
 }
+
+// not sure where to put this but need to be careful about ordinate order; col,row vs row, col
+// use col,row for method arguments and pushing into variables like guessedCoords
+// use row, col for gameboard logic
 class Gameboard {
     constructor() {
         function createGrid() {
@@ -23,7 +27,8 @@ class Gameboard {
             return newGrid
         }
         this.grid = createGrid();
-        this.guessedCoords = []
+        this.allShipCoords = [];
+        this.guessedCoords = [];
         this.isGameOver = false;
     }
 
@@ -37,7 +42,10 @@ class Gameboard {
         return false;
     }
 
-    // maybe its better to use horizontal and vertical
+    populateShipCoordsArray(col, row) {
+        this.allShipCoords.push([col, row])
+    }
+
     placeShip(length, orientation, [startCol, startRow]) {
 
         // test if start coord is out of bounds
@@ -50,8 +58,7 @@ class Gameboard {
             // if orientation is horizontal
             // stuff happens from left to right
             case 'horizontal':
-                //loop for length and check if out of bounds
-                //but then if any of them are bad, then cancel
+                //loop for length and check if out of bounds or already occupied; if so cancel execution
                 for (let i = 0; i< length; i++) {
                     if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds'
                     if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied'
@@ -61,7 +68,13 @@ class Gameboard {
                 // at each grid square, occupy with ship ID
                 for (let i = 0; i< length; i++) {
                    this.grid[startRow][startCol + i].hasShip = true;
+                   // this may be not good
                    this.grid[startRow][startCol + i].ship = newShip;
+
+                   // may be an error in the col and row argument order
+                   //not understand...
+                   // change this from spaces, to coordinates, cus i don't want a copy of objects
+                   this.populateShipCoordsArray(startCol + i, startRow)
                 }
                 break
 
@@ -76,10 +89,12 @@ class Gameboard {
 
                 // and then put stuff along the column (occupy rows of the same column)
                 for (let i = 0; i< length; i++) {
-                    console.log(9 - startRow+i)
-                    // console.log([9 - startRow + i][startCol])
                     this.grid[9 - startRow + i][startCol].hasShip = true;
                     this.grid[9 - startRow + i][startCol].ship = newShip;
+
+                   // may be an error in the col and row argument order
+                   // change this from spaces, to coordinates, cus i don't want a copy of objects
+                   this.populateShipCoordsArray(startCol, startRow + i)
                 }
                 break
         }
@@ -102,14 +117,22 @@ class Gameboard {
         return this.grid[row][col].missedHit
     }
 
-    checkPositionWasHit(col, row) {
-        return this.getShip(col, row).wasGuessed
-    }
-
     checkWasGuessed(col, row) {
         return this.grid[row][col].wasGuessed
     }
 
+    checkIsGameOver() {
+        // do i need to stringify these? what a pain...
+        let convertedAllShipCoords = this.allShipCoords.map(coord => JSON.stringify(coord))
+        console.log(convertedAllShipCoords)
+        let convertedGuessedCoords = this.guessedCoords.map(coord => JSON.stringify(coord))
+        console.log(convertedGuessedCoords)
+        if (convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))) {
+            this.isGameOver = true;
+        }
+    }
+
+    // i believe i need to swap the col and row for guessed coords... everything else should be good
     receiveAttack(col, row) {
         // first, check if position is already guessed
         if (this.checkWasGuessed(col, row)) return 'already attacked';
@@ -122,6 +145,12 @@ class Gameboard {
             // if there is, then identify the ship
             // then hit the ship
             this.getShip(col, row).hit()
+            // then check if ship is sunk
+            this.getShip(col, row).isSunk();
+
+            // then check if all ships are hit, by comparing allShipCoords and guessedCoords arrays 
+            // this.checkIsGameOver();
+
         }
         // if there isn't a ship, then mark the place with missedHit
         else {

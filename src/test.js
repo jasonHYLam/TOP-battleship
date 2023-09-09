@@ -1,6 +1,9 @@
 import { Ship, initialiseShip } from "./ship.js";
 import { Gameboard } from "./gameboard.js";
 
+// let's be clear; 
+// the first argument refers to the column number. 
+// the second argument refers to the row number. 
 let newShip;
 let newGameboard
 
@@ -28,9 +31,6 @@ test('test if Ship is sunk', () => {
     expect(newShip.sunk).toBe(true);
 })
 
-// i feel like it would be wrong to test if i can place a ship, because that seems like implementation rather than behaviour
-// and what do i even assert for? what value can i even expect?
-
 test('place ship in coordinate', () => {
     newGameboard.placeShip(4, 'horizontal', [1,3])
     expect(newGameboard.getPosition(1,3).hasShip).toBe(true)
@@ -44,9 +44,14 @@ test('ship receives a hit with receiveAttack', () => {
     newGameboard.placeShip(4, 'horizontal', [1,3])
     newGameboard.receiveAttack(1,3)
     let hitShip = newGameboard.getShip(1,3)
-    console.log(hitShip)
-
     expect(hitShip.hits).toBe(1)
+
+    // i may have to expand on this bit, cus im confused
+    // i wasn't expecting a hit on a different position, to correspond to the same ship... that's nuts if true
+    newGameboard.receiveAttack(2,3)
+    hitShip = newGameboard.getShip(2,3)
+    // what? how does this work???
+    expect(hitShip.hits).toBe(2)
 })
 
 test('miss a hit with receiveAttack', () => {
@@ -91,27 +96,43 @@ test('test only one instance of a coordinate is in guessedCoords', () => {
 })
 
 // report that all ships are sunk
+// remember that first arg is column number (along x axis)
+// second arg is row number (along y axis)
+
+// this does not test for the Ship sunk property, just if all ship positions are guessed
+// so it ain't a good test
+//btw how checkIsGameOver works is that it compares two arrays which contain coordinates, and sees if one array contains all elements in another
 test('report all ships are sunk', () => {
     newGameboard.placeShip(4, 'horizontal', [0,0])
     newGameboard.placeShip(4, 'vertical', [5,5])
 
     newGameboard.receiveAttack(0,0)
-    newGameboard.receiveAttack(0,1)
-    newGameboard.receiveAttack(0,2)
-    newGameboard.receiveAttack(0,3)
+    newGameboard.receiveAttack(1,0)
+    newGameboard.receiveAttack(2,0)
+    newGameboard.receiveAttack(3,0)
 
     newGameboard.receiveAttack(5,5)
-    newGameboard.receiveAttack(6,5)
-    newGameboard.receiveAttack(7,5)
-    newGameboard.receiveAttack(8,5)
+    newGameboard.receiveAttack(5,6)
+    newGameboard.receiveAttack(5,7)
+    newGameboard.receiveAttack(5,8)
 
     //now, how should the message be reported?
     // should something be set as a property? like gameboard.isOver
+    newGameboard.checkIsGameOver()
 
     expect(newGameboard.isGameOver).toBe(true)
-
 })
-//need to ensure that a ship is sunk correctly// test if hitting it 4 times will make it sunk
 
-// also, how do i know all ships are sunk?
-// maybe have a function to check all positions if there any that have hasShip and was guessed
+test('test that ship is sunk by hitting on all positions', () => {
+    newGameboard.placeShip(4, 'horizontal', [0,0])
+    newGameboard.receiveAttack(0,0)
+    expect(newGameboard.getShip(0,0).hits).toBe(1)
+    newGameboard.receiveAttack(1,0)
+    expect(newGameboard.getShip(1,0).hits).toBe(2)
+    newGameboard.receiveAttack(2,0)
+    expect(newGameboard.getShip(2,0).hits).toBe(3)
+    newGameboard.receiveAttack(3,0)
+
+    expect(newGameboard.getShip(3,0).hits).toBe(4)
+    expect(newGameboard.getShip(3,0).sunk).toBe(true)
+})
