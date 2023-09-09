@@ -15,7 +15,7 @@ beforeEach(() => {
     newShip = initialiseShip(4)
     newGameboard = new Gameboard()
     newPlayer = new Player()
-    computerPlayer = new Player();
+    computerPlayer = new Computer();
 })
 
 test('test invalid Ship construction', () => {
@@ -156,8 +156,15 @@ test('player attacks computer', () => {
     expect(computerGameboard.getPosition(1,3).missedHit).toBe(true)
 })
 
+test('computer attacks player', () => {
+    let playerGameboard = new Gameboard();
+    let computerGameboard = new Gameboard();
+    computerPlayer.randomAttack(playerGameboard)
+})
+
 //how would i test turn changing behaviour?
 // maybe i need a gameController.js...
+// actually don't think i need this
 test('when player attacks, turn goes to computer who attacks', () => {
 
 })

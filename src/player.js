@@ -9,8 +9,10 @@ export class Player {
     }
 }
 
+// ahhh don't think this works,,, gotta use super?
 export class Computer extends Player {
     constructor() {
+        super()
     }
 
     randomAttack(gameboard) {
@@ -22,6 +24,6 @@ export class Computer extends Player {
         if(gameboard.checkWasGuessed(randomCol, randomRow)) return
 
         //then call attack
-        this.attack(randomCol, randomRow)
+        this.attack(gameboard, [randomCol, randomRow])
     }
 }
