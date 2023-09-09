@@ -132,7 +132,6 @@ class Gameboard {
         }
     }
 
-    // i believe i need to swap the col and row for guessed coords... everything else should be good
     receiveAttack(col, row) {
         // first, check if position is already guessed
         if (this.checkWasGuessed(col, row)) return 'already attacked';

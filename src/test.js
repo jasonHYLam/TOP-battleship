@@ -1,16 +1,21 @@
 import { Ship, initialiseShip } from "./ship.js";
 import { Gameboard } from "./gameboard.js";
+import { Player } from "./player.js"
 
 // let's be clear; 
 // the first argument refers to the column number. 
 // the second argument refers to the row number. 
 let newShip;
-let newGameboard
+let newGameboard;
+let newPlayer;
+let computerPlayer;
 
 beforeEach(() => {
     // newShip = new Ship(4)
     newShip = initialiseShip(4)
     newGameboard = new Gameboard()
+    newPlayer = new Player()
+    computerPlayer = new Player();
 })
 
 test('test invalid Ship construction', () => {
@@ -102,6 +107,9 @@ test('test only one instance of a coordinate is in guessedCoords', () => {
 // this does not test for the Ship sunk property, just if all ship positions are guessed
 // so it ain't a good test
 //btw how checkIsGameOver works is that it compares two arrays which contain coordinates, and sees if one array contains all elements in another
+
+
+// i may need to test the Ships themselves... do i need to put them in an array?
 test('report all ships are sunk', () => {
     newGameboard.placeShip(4, 'horizontal', [0,0])
     newGameboard.placeShip(4, 'vertical', [5,5])
@@ -135,4 +143,20 @@ test('test that ship is sunk by hitting on all positions', () => {
 
     expect(newGameboard.getShip(3,0).hits).toBe(4)
     expect(newGameboard.getShip(3,0).sunk).toBe(true)
+})
+
+
+// testing Player.js
+
+test('player attacks computer', () => {
+    let playerGameboard = new Gameboard();
+    let computerGameboard = new Gameboard();
+    // what exactly should player attack? the computerPlayer? the computerGameboard?
+    newPlayer.attack(computerGameboard, [1,3])
+    expect(computerGameboard.getPosition(1,3).missedHit).toBe(true)
+})
+
+//how would i test turn changing behaviour?
+// maybe i need a gameController.js...
+test('when player attacks, turn goes to computer who attacks', () => {
 })
