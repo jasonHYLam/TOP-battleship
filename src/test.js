@@ -126,9 +126,11 @@ test('report all ships are sunk', () => {
 
     //now, how should the message be reported?
     // should something be set as a property? like gameboard.isOver
+    expect(
     newGameboard.checkIsGameOver()
 
-    expect(newGameboard.isGameOver).toBe(true)
+    ).toBe(true)
+
 })
 
 test('test that ship is sunk by hitting on all positions', () => {

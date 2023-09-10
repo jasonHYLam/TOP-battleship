@@ -29,7 +29,6 @@ class Gameboard {
         this.grid = createGrid();
         this.allShipCoords = [];
         this.guessedCoords = [];
-        this.isGameOver = false;
     }
 
     isOutOfBounds(col, row) {
@@ -49,10 +48,10 @@ class Gameboard {
     placeShip(length, orientation, [startCol, startRow]) {
 
         // test if start coord is out of bounds
-        if (this.isOutOfBounds(startCol, startRow)) return 
+        if (this.isOutOfBounds(startCol, startRow)) return 'out of bounds';
 
-        let newShip = initialiseShip(length)
-        if (!newShip) return
+        let newShip = initialiseShip(length);
+        if (!newShip) return;
 
         switch(orientation) {
             // if orientation is horizontal
@@ -60,8 +59,8 @@ class Gameboard {
             case 'horizontal':
                 //loop for length and check if out of bounds or already occupied; if so cancel execution
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds'
-                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied'
+                    if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds';
+                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied';
                 }
 
                 // else, loop along the row (occupy columns of the same row)
@@ -100,6 +99,32 @@ class Gameboard {
         }
     }
 
+    // what do i place on the board?
+    // 5 pieces i think
+    // hmm how do i keep trying to place the ships if they are out of bounds or already palced?
+    // should i just put each in a while loop? or use recursion?
+
+    placeAllShipsOnBoard() {
+        // need to put ships horizontally or vertically randomly
+        // this will only generate one orientation... make it a separate function
+        function generateRandomOrientation() {
+            return ['horizontal', 'vertical'].Math.round(Math.random())
+        }
+
+        function generateRandomCoordinates() {
+            const randomCol = Math.floor(Math.random() * 10)
+            const randomRow = Math.floor(Math.random() * 10)
+            return [randomCol, randomRow]
+        }
+
+
+        //how do i prevent failure to place a ship? is it 
+        // there are several options... 
+        // while () {}
+        this.placeShip(5, generateRandomOrientation(), generateRandomCoordinates())
+
+    }
+
     getPosition(col, row) {
         return this.grid[row][col]
     }
@@ -121,15 +146,14 @@ class Gameboard {
         return this.grid[row][col].wasGuessed
     }
 
+    // compare stringified ship coords to the guessed coords, and return true if all ship coords are guessed.
     checkIsGameOver() {
-        // do i need to stringify these? what a pain...
         let convertedAllShipCoords = this.allShipCoords.map(coord => JSON.stringify(coord))
-        console.log(convertedAllShipCoords)
         let convertedGuessedCoords = this.guessedCoords.map(coord => JSON.stringify(coord))
-        console.log(convertedGuessedCoords)
-        if (convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))) {
-            this.isGameOver = true;
-        }
+        // if (convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))) {
+        //     this.isGameOver = true;
+        // }
+        return convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))
     }
 
     receiveAttack(col, row) {
