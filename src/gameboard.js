@@ -59,16 +59,16 @@ class Gameboard {
             case 'horizontal':
                 //loop for length and check if out of bounds or already occupied; if so cancel execution
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds';
-                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied';
+                    if (this.isOutOfBounds(9 - startRow, startCol + i)) return 'out of bounds';
+                    if (this.checkIfAlreadyPlaced(9 - startRow, startCol + i)) return 'position already occupied';
                 }
 
                 // else, loop along the row (occupy columns of the same row)
                 // at each grid square, occupy with ship ID
                 for (let i = 0; i< length; i++) {
-                   this.grid[startRow][startCol + i].hasShip = true;
+                   this.grid[9 - startRow][startCol + i].hasShip = true;
                    // this may be not good
-                   this.grid[startRow][startCol + i].ship = newShip;
+                   this.grid[9 - startRow][startCol + i].ship = newShip;
 
                    // may be an error in the col and row argument order
                    //not understand...
@@ -180,5 +180,7 @@ class Gameboard {
             this.getPosition(col, row).missedHit = true;
         }
     }
+
+    
 }
 export {Gameboard}

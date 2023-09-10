@@ -1,6 +1,7 @@
 import { Ship, initialiseShip } from "./ship.js";
 import { Gameboard } from "./gameboard.js";
 import { Player, Computer } from "./player.js"
+import { makeGameController } from "./gameController.js";
 
 // let's be clear; 
 // the first argument refers to the column number. 
@@ -162,6 +163,11 @@ test('computer attacks player', () => {
     let playerGameboard = new Gameboard();
     let computerGameboard = new Gameboard();
     computerPlayer.randomAttack(playerGameboard)
+})
+
+// not sure how else to test this, other than to console log and create DOM
+test('test tryAttackUntilSuccess', () => {
+    makeGameController().tryAttackUntilSuccess(1,3)
 })
 
 //how would i test turn changing behaviour?
