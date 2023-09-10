@@ -8,6 +8,7 @@ export class Player {
         gameboard.receiveAttack(col, row)
     }
 
+    // actually this can't be in here... cus the col and row don't change... they gotta change
     tryAttackUntilSuccess(gameboard, [col, row]) {
         let initialGuesses = JSON.stringify(gameboard.guessedCoords)
         let currentGuesses;
@@ -35,14 +36,4 @@ export class Computer extends Player {
         //then call attack
         this.attack(gameboard, [randomCol, randomRow])
     }
-
-    tryAttackUntilSucess(gameboard) {
-        let initialGuesses = JSON.stringify(gameboard.guessedCoords)
-        let currentGuesses;
-        while (initialGuesses !== currentGuesses) {
-            this.randomAttack(gameboard)
-            currentGuesses = JSON.stringify(gameboard.guessedCoords)
-        }
-    }
-
 }
