@@ -21,7 +21,7 @@ class Ship {
 }
 
 function initialiseShip(length) {
-    if (length < 1 || length > 4) return 
+    if (length < 1 || length > 5) return 
     return new Ship(length)
 }
 

@@ -19,19 +19,19 @@ export function makeGameController() {
 
     // wait, is this mocking? it may be worth a read again...
 
-    playerGameboard.placeShip(5, 'vertical', [9,3]);
+    playerGameboard.placeShip(5, 'vertical', [9,6]);
     playerGameboard.placeShip(4, 'horizontal', [0,8]);
     playerGameboard.placeShip(3, 'vertical', [5,6]);
     playerGameboard.placeShip(3, 'horizontal', [2,3]);
     playerGameboard.placeShip(2, 'vertical', [1,2]);
 
-    // computerGameboard.placeShip(5, 'vertical', [9,3]);
-    // computerGameboard.placeShip(5, 'horizontal', [0,0]);
+    computerGameboard.placeShip(5, 'vertical', [9,6]);
+    computerGameboard.placeShip(4, 'horizontal', [0,8]);
     // computerGameboard.placeShip(4, 'vertical', [5,9]);
-    computerGameboard.placeShip(4, 'horizontal', [5,9]);
-    // computerGameboard.placeShip(3, 'vertical', [5,6]);
-    // computerGameboard.placeShip(3, 'horizontal', [2,3]);
-    // computerGameboard.placeShip(2, 'vertical', [1,2]);
+    // computerGameboard.placeShip(4, 'horizontal', [5,9]);
+    computerGameboard.placeShip(3, 'vertical', [5,6]);
+    computerGameboard.placeShip(3, 'horizontal', [2,3]);
+    computerGameboard.placeShip(2, 'vertical', [1,2]);
 
     // i will need DOM in another separate file
 
