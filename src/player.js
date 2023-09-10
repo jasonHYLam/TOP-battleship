@@ -7,6 +7,15 @@ export class Player {
     attack(gameboard, [col, row]) {
         gameboard.receiveAttack(col, row)
     }
+
+    tryAttackUntilSuccess(gameboard, [col, row]) {
+        let initialGuesses = JSON.stringify(gameboard.guessedCoords)
+        let currentGuesses;
+        while (initialGuesses !== currentGuesses) {
+            this.attack(gameboard, [col, row])
+            currentGuesses = JSON.stringify(gameboard.guessedCoords)
+        }
+    }
 }
 
 // ahhh don't think this works,,, gotta use super?
@@ -26,4 +35,14 @@ export class Computer extends Player {
         //then call attack
         this.attack(gameboard, [randomCol, randomRow])
     }
+
+    tryAttackUntilSucess(gameboard) {
+        let initialGuesses = JSON.stringify(gameboard.guessedCoords)
+        let currentGuesses;
+        while (initialGuesses !== currentGuesses) {
+            this.randomAttack(gameboard)
+            currentGuesses = JSON.stringify(gameboard.guessedCoords)
+        }
+    }
+
 }

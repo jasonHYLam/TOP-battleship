@@ -13,7 +13,7 @@ function makeGameController() {
     const computer = new Computer();
 
     let currentPlayer = player;
-    let enemyPlayer = computer;
+    let enemyGameboard = computerGameboard
 
     let isGameOver = false;
 
@@ -36,7 +36,7 @@ function makeGameController() {
     // will need to test each of these...
     function swapPlayerAndEnemy() {
         currentPlayer === player ? currentPlayer = computer : currentPlayer = player;
-        enemyPlayer === player ? enemyPlayer = computer : enemyPlayer = player;
+        enemyGameboard === playerGameboard ? enemyGameboard = computerGameboard : enemyGameboard = playerGameboard;
     }
 
     function checkIsGameOver(gameboard) {
@@ -55,20 +55,20 @@ function makeGameController() {
                 // i need to make use of something? either the return statement, or the gameboard changing? or maybe wasGuessed changing?
                 currentPlayer.attack(enemyPlayer, attackCoords)
                 // maybe print the board...?
-                checkIsGameOver(computerGameboard);
+                checkIsGameOver(enemyGameboard);
                 swapPlayer();
                 break;
             
             case computer:
-                currentPlayer.randomAttack(playerGameboard);
-                checkIsGameOver(playerGameboard);
+                currentPlayer.randomAttack(enemyGameboard);
+                checkIsGameOver(enemyGameboard);
                 swapPlayer();
                 break;
             }
         }
 
         // while (!isGameOver) {
-            playRound()
+            // playRound()
 
         // }
 }
