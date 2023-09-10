@@ -33,12 +33,26 @@ function makeGameController() {
 
     // i will need DOM in another separate file
 
+    // will need to test each of these...
+    function swapPlayerAndEnemy() {
+        currentPlayer === player ? currentPlayer = computer : currentPlayer = player;
+        enemyPlayer === player ? enemyPlayer = computer : enemyPlayer = player;
+    }
+
+    function checkIsGameOver(gameboard) {
+        // hmm i think i need to change the checkIsGameOver() in gameboard.js cus that sets isGameOver in gameboard... need to change test
+        if (gameboard.checkIsGameOver()) isGameOver = true;
+    }
     // need while loop, while game isn't finished
     // need to play a move, and somehow also get around problem of returning if invalid move
     function playRound() {
         switch (currentPlayer) {
             case player:
                 let attackCoords = prompt('coords to attack, in "[x,y]"')
+                // how do i make it so that if an invalid move is made, try again?
+                // do i implement that here?
+                // there are three places i could implement it; receiveAttack(), attack(), or playRound()
+                // i need to make use of something? either the return statement, or the gameboard changing? or maybe wasGuessed changing?
                 currentPlayer.attack(enemyPlayer, attackCoords)
                 // maybe print the board...?
                 checkIsGameOver(computerGameboard);
@@ -52,4 +66,9 @@ function makeGameController() {
                 break;
             }
         }
+
+        // while (!isGameOver) {
+            playRound()
+
+        // }
 }
