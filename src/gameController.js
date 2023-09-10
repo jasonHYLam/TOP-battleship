@@ -18,7 +18,6 @@ export function makeGameController() {
     let isGameOver = false;
 
     // wait, is this mocking? it may be worth a read again...
-
     playerGameboard.placeShip(5, 'vertical', [9,6]);
     playerGameboard.placeShip(4, 'horizontal', [0,8]);
     playerGameboard.placeShip(3, 'vertical', [5,6]);
@@ -27,8 +26,6 @@ export function makeGameController() {
 
     computerGameboard.placeShip(5, 'vertical', [9,6]);
     computerGameboard.placeShip(4, 'horizontal', [0,8]);
-    // computerGameboard.placeShip(4, 'vertical', [5,9]);
-    // computerGameboard.placeShip(4, 'horizontal', [5,9]);
     computerGameboard.placeShip(3, 'vertical', [5,6]);
     computerGameboard.placeShip(3, 'horizontal', [2,3]);
     computerGameboard.placeShip(2, 'vertical', [1,2]);
@@ -68,7 +65,9 @@ export function makeGameController() {
 
     // check if the guessedCoords array changes; if so, the attack was successful.
     // this absolutely must get tested...
-    function tryAttackUntilSuccess(col, row) {
+    function tryAttackUntilSuccess() {
+
+        let [col, row] = prompt('coords to attack, in "[x,y]"').split(",")
         let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
         let currentGuesses;
 
@@ -103,11 +102,11 @@ export function makeGameController() {
                 // i need to make use of something? either the return statement, or the gameboard changing? or maybe wasGuessed changing?
 
                 // currentPlayer.attack(enemyGameboard, [col, row])
-                // currentPlayer.tryAttackUntilSuccess(enemyGameboard, [col, row])
+                currentPlayer.tryAttackUntilSuccess()
                 // maybe print the board...?
                 visualiseGameboard(enemyGameboard);
                 checkIsGameOver(enemyGameboard);
-                swapPlayer();
+                swapPlayerAndEnemy();
                 break;
             
             case computer:
@@ -115,7 +114,7 @@ export function makeGameController() {
                 visualiseGameboard();
                 // currentPlayer.tryAttackUntilSuccess(enemyGameboard);
                 checkIsGameOver(enemyGameboard);
-                swapPlayer();
+                swapPlayerAndEnemy();
                 break;
             }
         }

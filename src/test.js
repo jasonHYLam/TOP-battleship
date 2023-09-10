@@ -20,7 +20,7 @@ beforeEach(() => {
 })
 
 test('test invalid Ship construction', () => {
-    newShip = initialiseShip(5);
+    newShip = initialiseShip(6);
     expect(newShip).toBe(undefined);
 })
 test('test if Ship is hit', () => {

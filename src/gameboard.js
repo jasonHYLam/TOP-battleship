@@ -59,16 +59,16 @@ class Gameboard {
             case 'horizontal':
                 //loop for length and check if out of bounds or already occupied; if so cancel execution
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(9 - startRow, startCol + i)) return 'out of bounds';
-                    if (this.checkIfAlreadyPlaced(9 - startRow, startCol + i)) return 'position already occupied';
+                    if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds';
+                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied';
                 }
 
                 // else, loop along the row (occupy columns of the same row)
                 // at each grid square, occupy with ship ID
                 for (let i = 0; i< length; i++) {
-                   this.grid[9 - startRow][startCol + i].hasShip = true;
+                   this.grid[startRow][startCol + i].hasShip = true;
                    // this may be not good
-                   this.grid[9 - startRow][startCol + i].ship = newShip;
+                   this.grid[startRow][startCol + i].ship = newShip;
 
                    // may be an error in the col and row argument order
                    //not understand...
@@ -82,14 +82,14 @@ class Gameboard {
             // row[0] is bottom, row[9] to top, due to the `9 - `
             case 'vertical':
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(9 - startRow + i, startCol)) return 'out of bounds'
-                    if (this.checkIfAlreadyPlaced(9 - startRow + i, startCol)) return 'position already occupied'
+                    if (this.isOutOfBounds(startRow + i, startCol)) return 'out of bounds'
+                    if (this.checkIfAlreadyPlaced(startRow + i, startCol)) return 'position already occupied'
                 }
 
                 // and then put stuff along the column (occupy rows of the same column)
                 for (let i = 0; i< length; i++) {
-                    this.grid[9 - startRow + i][startCol].hasShip = true;
-                    this.grid[9 - startRow + i][startCol].ship = newShip;
+                    this.grid[startRow + i][startCol].hasShip = true;
+                    this.grid[startRow + i][startCol].ship = newShip;
 
                    // may be an error in the col and row argument order
                    // change this from spaces, to coordinates, cus i don't want a copy of objects
