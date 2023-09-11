@@ -1,0 +1,24 @@
+.gameboard-container {
+    width: 800px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    background-color: bisque;
+}
+
+.row {
+    flex: 1;
+    display: flex;
+    background-color: yellow;
+    /* justify-content: center; */
+}
+
+.column {
+    flex: 1;
+    background-color: aqua;
+    /* justify-content: center; */
+    text-align: center;
+
+}
+
+

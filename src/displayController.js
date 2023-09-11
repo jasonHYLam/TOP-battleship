@@ -19,11 +19,9 @@ function determineText(space) {
 
 function displayGameboard(gameboard) {
     let gameboardContainer = document.querySelector('.gameboard-container')
-    console.log(gameboardContainer)
     gameboard.grid.map(row => {
         let rowElement = populateElementInfo('div', 'row', null, gameboardContainer);
         row.map(space => {
-
             populateElementInfo('div', 'column', determineText(space), rowElement)
         })
     })
