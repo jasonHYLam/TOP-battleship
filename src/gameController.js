@@ -17,16 +17,16 @@ export function makeGameController() {
     let isGameOver = false;
 
     // wait, is this mocking? it may be worth a read again...
-    playerGameboard.placeShip(5, 'vertical', [9,6]);
-    playerGameboard.placeShip(4, 'horizontal', [0,8]);
-    playerGameboard.placeShip(3, 'vertical', [5,6]);
-    playerGameboard.placeShip(3, 'horizontal', [2,3]);
+    // playerGameboard.placeShip(5, 'vertical', [9,6]);
+    // playerGameboard.placeShip(4, 'horizontal', [0,8]);
+    // playerGameboard.placeShip(3, 'vertical', [5,6]);
+    // playerGameboard.placeShip(3, 'horizontal', [2,3]);
     playerGameboard.placeShip(2, 'vertical', [1,2]);
 
-    computerGameboard.placeShip(5, 'vertical', [9,3]);
-    computerGameboard.placeShip(4, 'horizontal', [0,8]);
-    computerGameboard.placeShip(3, 'vertical', [5,6]);
-    computerGameboard.placeShip(3, 'horizontal', [2,3]);
+    // computerGameboard.placeShip(5, 'vertical', [9,3]);
+    // computerGameboard.placeShip(4, 'horizontal', [0,8]);
+    // computerGameboard.placeShip(3, 'vertical', [5,6]);
+    // computerGameboard.placeShip(3, 'horizontal', [2,3]);
     computerGameboard.placeShip(2, 'vertical', [1,2]);
 
     // will need to test each of these...
@@ -60,59 +60,43 @@ export function makeGameController() {
     // this absolutely must get tested...
     function tryAttackUntilSuccess() {
 
-        // i still need to change this... change it to a function and call it in player
-        function askPlayerForCoords() {
-            // maybe make regex in the future...
-            return prompt('coords to attack, in "[x,y]"').split(",")
-        }
-
         let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
         let currentGuesses = initialGuesses;
 
+        let validPlayMade = false;
+
         switch (currentPlayer) {
             case player:
-                // is it cus of this while loop?
-                let validPlayMade = false;
-                // while (initialGuesses === currentGuesses) {
                 while (!validPlayMade) {
-                    console.log(initialGuesses === currentGuesses)
-                    console.log('work?')
-                    // let [col, row] = askPlayerForCoords();
-                    let [col, row] = prompt('coords to attack, in "x,y"').split(",")
-                    // let [col, row] = [1,3]
+                    // let [col, row] = prompt('coords to attack, in "x,y"').split(",")
+                    const col = parseInt(prompt('col to attack'));
+                    const row = parseInt(prompt('row to attack'));
                     currentPlayer.attack(enemyGameboard, [col, row])
                     currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-                    console.log(initialGuesses)
-                    console.log(currentGuesses)
                     if (initialGuesses !== currentGuesses) validPlayMade = true;
                 }
                 break;
 
             case computer:
-                while (initialGuesses !== currentGuesses) {
+                while (!validPlayMade) {
                     currentPlayer.randomAttack(enemyGameboard)
                     currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
+                    if (initialGuesses !== currentGuesses) validPlayMade = true;
                 }
                 break;
         }
     }
-    // need while loop, while game isn't finished
-    // need to play a move, and somehow also get around problem of returning if invalid move
+
     function playRound() {
 
         switch (currentPlayer) {
             case player:
                 console.log('player')
                 visualiseGameboard(enemyGameboard);
-                // let [col, row] = prompt('coords to attack, in "[x,y]"').split(",")
                 tryAttackUntilSuccess()
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
-                console.log(currentPlayer)
-                console.log(enemyGameboard)
                 break;
-
-                //does it swap at all?
             
             case computer:
                 console.log('computer')
@@ -124,10 +108,10 @@ export function makeGameController() {
             }
         }
 
-        // the culprit for infinite tsukuyomi is here
     function playGame() {
         while (!isGameOver) {
             playRound()
+            if (isGameOver) console.log('GAME IS OVER')
         }
 
     }

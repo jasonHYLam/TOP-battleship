@@ -149,10 +149,13 @@ class Gameboard {
     // compare stringified ship coords to the guessed coords, and return true if all ship coords are guessed.
     checkIsGameOver() {
         let convertedAllShipCoords = this.allShipCoords.map(coord => JSON.stringify(coord))
-        let convertedGuessedCoords = this.guessedCoords.map(coord => JSON.stringify(coord))
+        let convertedGuessedCoords = this.guessedCoords.map(coord =>JSON.stringify(coord))
+        console.log(convertedAllShipCoords)
+        console.log(convertedGuessedCoords)
         // if (convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))) {
         //     this.isGameOver = true;
         // }
+        console.log(convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord)))
         return convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))
     }
 
