@@ -5,7 +5,6 @@ export function makeGameController() {
     // at some point, will need to develop function to placeAllShips, which 
     // needs to get around the problem of looping placeShip until it is actually placed
 
-    // do i use 
     let playerGameboard = new Gameboard();
     let computerGameboard = new Gameboard();
 
@@ -24,13 +23,11 @@ export function makeGameController() {
     playerGameboard.placeShip(3, 'horizontal', [2,3]);
     playerGameboard.placeShip(2, 'vertical', [1,2]);
 
-    computerGameboard.placeShip(5, 'vertical', [9,6]);
+    computerGameboard.placeShip(5, 'vertical', [9,3]);
     computerGameboard.placeShip(4, 'horizontal', [0,8]);
     computerGameboard.placeShip(3, 'vertical', [5,6]);
     computerGameboard.placeShip(3, 'horizontal', [2,3]);
     computerGameboard.placeShip(2, 'vertical', [1,2]);
-
-    // i will need DOM in another separate file
 
     // will need to test each of these...
     function swapPlayerAndEnemy() {
@@ -57,29 +54,41 @@ export function makeGameController() {
             )
                 )
         })
-
-        // i need to console log each row
-        
-
     }
 
     // check if the guessedCoords array changes; if so, the attack was successful.
     // this absolutely must get tested...
     function tryAttackUntilSuccess() {
 
-        let [col, row] = prompt('coords to attack, in "[x,y]"').split(",")
+        // i still need to change this... change it to a function and call it in player
+        function askPlayerForCoords() {
+            // maybe make regex in the future...
+            return prompt('coords to attack, in "[x,y]"').split(",")
+        }
+
         let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-        let currentGuesses;
+        let currentGuesses = initialGuesses;
 
         switch (currentPlayer) {
             case player:
-                while (initialGuesses === currentGuesses) {
+                // is it cus of this while loop?
+                let validPlayMade = false;
+                // while (initialGuesses === currentGuesses) {
+                while (!validPlayMade) {
+                    console.log(initialGuesses === currentGuesses)
+                    console.log('work?')
+                    // let [col, row] = askPlayerForCoords();
+                    let [col, row] = prompt('coords to attack, in "x,y"').split(",")
+                    // let [col, row] = [1,3]
                     currentPlayer.attack(enemyGameboard, [col, row])
                     currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
+                    console.log(initialGuesses)
+                    console.log(currentGuesses)
+                    if (initialGuesses !== currentGuesses) validPlayMade = true;
                 }
                 break;
 
-            case player:
+            case computer:
                 while (initialGuesses !== currentGuesses) {
                     currentPlayer.randomAttack(enemyGameboard)
                     currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
@@ -94,31 +103,28 @@ export function makeGameController() {
         switch (currentPlayer) {
             case player:
                 console.log('player')
-                // let [col, row] = prompt('coords to attack, in "[x,y]"').split(",")
-
-                // how do i make it so that if an invalid move is made, try again?
-                // do i implement that here?
-                // there are three places i could implement it; receiveAttack(), attack(), or playRound()
-                // i need to make use of something? either the return statement, or the gameboard changing? or maybe wasGuessed changing?
-
-                // currentPlayer.attack(enemyGameboard, [col, row])
-                currentPlayer.tryAttackUntilSuccess()
-                // maybe print the board...?
                 visualiseGameboard(enemyGameboard);
+                // let [col, row] = prompt('coords to attack, in "[x,y]"').split(",")
+                tryAttackUntilSuccess()
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
+                console.log(currentPlayer)
+                console.log(enemyGameboard)
                 break;
+
+                //does it swap at all?
             
             case computer:
                 console.log('computer')
-                visualiseGameboard();
-                // currentPlayer.tryAttackUntilSuccess(enemyGameboard);
+                visualiseGameboard(enemyGameboard);
+                tryAttackUntilSuccess();
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
             }
         }
 
+        // the culprit for infinite tsukuyomi is here
     function playGame() {
         while (!isGameOver) {
             playRound()

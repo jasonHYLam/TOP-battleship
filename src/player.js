@@ -9,14 +9,14 @@ export class Player {
     }
 
     // actually this can't be in here... cus the col and row don't change... they gotta change
-    tryAttackUntilSuccess(gameboard, [col, row]) {
-        let initialGuesses = JSON.stringify(gameboard.guessedCoords)
-        let currentGuesses;
-        while (initialGuesses !== currentGuesses) {
-            this.attack(gameboard, [col, row])
-            currentGuesses = JSON.stringify(gameboard.guessedCoords)
-        }
-    }
+    // tryAttackUntilSuccess(gameboard, [col, row]) {
+    //     let initialGuesses = JSON.stringify(gameboard.guessedCoords)
+    //     let currentGuesses;
+    //     while (initialGuesses !== currentGuesses) {
+    //         this.attack(gameboard, [col, row])
+    //         currentGuesses = JSON.stringify(gameboard.guessedCoords)
+    //     }
+    // }
 }
 
 // ahhh don't think this works,,, gotta use super?
