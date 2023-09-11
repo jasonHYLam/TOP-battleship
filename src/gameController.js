@@ -2,9 +2,10 @@ import { Gameboard } from "./gameboard";
 import { Player, Computer } from "./player";
 import { displayGameboard } from "./displayController";
 
+// i need to change this a little
+// need to display both gameboards...
 export function makeGameController() {
     // at some point, will need to develop function to placeAllShips, which 
-    // needs to get around the problem of looping placeShip until it is actually placed
 
     let playerGameboard = new Gameboard();
     let computerGameboard = new Gameboard();
@@ -16,6 +17,11 @@ export function makeGameController() {
     let enemyGameboard = computerGameboard
 
     let isGameOver = false;
+
+    // i can see that i need to change displayGameboard in displayController
+    // cus it takes a reference to the parent container, which needs to change
+    function displayBothGameboards() {
+    }
 
     // wait, is this mocking? it may be worth a read again...
     // playerGameboard.placeShip(5, 'vertical', [9,6]);
@@ -30,7 +36,7 @@ export function makeGameController() {
     // computerGameboard.placeShip(3, 'horizontal', [2,3]);
     computerGameboard.placeShip(2, 'vertical', [1,2]);
 
-    // will need to test each of these...
+    // maybe i need to change this? maybe not!
     function swapPlayerAndEnemy() {
         currentPlayer === player ? currentPlayer = computer : currentPlayer = player;
         enemyGameboard === playerGameboard ? enemyGameboard = computerGameboard : enemyGameboard = playerGameboard;
