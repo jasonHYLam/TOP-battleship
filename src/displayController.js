@@ -26,19 +26,30 @@ function determineCellStyle(space) {
 }
 
 // also, make divs clickable in css. don't allow clicks on already clicked.
+// make only the left gameboard clickable
 
 // maybe set timeout for enemy... wait a bit
-function displayGameboard(gameboard, containerName) {
+function displayPlayerGameboard(gameboard, containerName) {
     let gameboardContainer = document.querySelector(containerName)
     gameboard.grid.map(row => {
         let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
         row.map(space => {
-            // this don't work... the rest and spread
             populateElementInfo('div', determineText(space), rowElement, 'column', determineCellStyle(space))
         })
     })
 }
 
+function displayComputerGameboard(gameboard, containerName) {
+    let gameboardContainer = document.querySelector(containerName)
+    gameboard.grid.map(row => {
+        let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
+        row.map(space => {
+            populateElementInfo('div', determineText(space), rowElement, 'column')
+        })
+    })
+}
+
 export {
-    displayGameboard
+    displayPlayerGameboard,
+    displayComputerGameboard,
 }

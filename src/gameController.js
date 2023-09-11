@@ -1,6 +1,6 @@
 import { Gameboard } from "./gameboard";
 import { Player, Computer } from "./player";
-import { displayGameboard } from "./displayController";
+import { displayPlayerGameboard, displayComputerGameboard} from "./displayController";
 
 // i need to change this a little
 // need to display both gameboards...
@@ -21,8 +21,8 @@ export function makeGameController() {
     // i can see that i need to change displayGameboard in displayController
     // cus it takes a reference to the parent container, which needs to change
     function displayBothGameboards() {
-        displayGameboard(playerGameboard, '.gameboard-container.left')
-        displayGameboard(enemyGameboard, '.gameboard-container.right')
+        displayPlayerGameboard(playerGameboard, '.gameboard-container.left')
+        displayComputerGameboard(enemyGameboard, '.gameboard-container.right')
     }
 
     // wait, is this mocking? it may be worth a read again...
@@ -122,6 +122,7 @@ export function makeGameController() {
         }
 
     // use eventListeners now...
+
 
     function playGame() {
         // while (!isGameOver) {

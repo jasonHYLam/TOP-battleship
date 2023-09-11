@@ -11,6 +11,10 @@ body {
     gap: 40px;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .gameboard-container {
     width: 500px;
     height: 500px;
