@@ -21,6 +21,8 @@ export function makeGameController() {
     // i can see that i need to change displayGameboard in displayController
     // cus it takes a reference to the parent container, which needs to change
     function displayBothGameboards() {
+        displayGameboard(playerGameboard, '.gameboard-container.left')
+        displayGameboard(enemyGameboard, '.gameboard-container.right')
     }
 
     // wait, is this mocking? it may be worth a read again...
@@ -32,7 +34,7 @@ export function makeGameController() {
 
     // computerGameboard.placeShip(5, 'vertical', [9,3]);
     // computerGameboard.placeShip(4, 'horizontal', [0,8]);
-    // computerGameboard.placeShip(3, 'vertical', [5,6]);
+    computerGameboard.placeShip(3, 'vertical', [5,6]);
     // computerGameboard.placeShip(3, 'horizontal', [2,3]);
     computerGameboard.placeShip(2, 'vertical', [1,2]);
 
@@ -99,7 +101,8 @@ export function makeGameController() {
         switch (currentPlayer) {
             case player:
                 console.log('player')
-                displayGameboard(enemyGameboard)
+                // displayGameboard(enemyGameboard)
+                displayBothGameboards();
                 visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess()
                 checkIsGameOver(enemyGameboard);
@@ -108,7 +111,8 @@ export function makeGameController() {
             
             case computer:
                 console.log('computer')
-                displayGameboard(enemyGameboard)
+                // displayGameboard(enemyGameboard)
+                displayBothGameboards();
                 visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess();
                 checkIsGameOver(enemyGameboard);
@@ -116,6 +120,8 @@ export function makeGameController() {
                 break;
             }
         }
+
+    // use eventListeners now...
 
     function playGame() {
         // while (!isGameOver) {
