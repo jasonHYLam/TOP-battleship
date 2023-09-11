@@ -1,5 +1,6 @@
 import { Gameboard } from "./gameboard";
 import { Player, Computer } from "./player";
+import { displayGameboard } from "./displayController";
 
 export function makeGameController() {
     // at some point, will need to develop function to placeAllShips, which 
@@ -92,16 +93,18 @@ export function makeGameController() {
         switch (currentPlayer) {
             case player:
                 console.log('player')
+                displayGameboard(enemyGameboard)
                 visualiseGameboard(enemyGameboard);
-                tryAttackUntilSuccess()
+                // tryAttackUntilSuccess()
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
             
             case computer:
                 console.log('computer')
+                displayGameboard(enemyGameboard)
                 visualiseGameboard(enemyGameboard);
-                tryAttackUntilSuccess();
+                // tryAttackUntilSuccess();
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
@@ -109,10 +112,10 @@ export function makeGameController() {
         }
 
     function playGame() {
-        while (!isGameOver) {
+        // while (!isGameOver) {
             playRound()
             if (isGameOver) console.log('GAME IS OVER')
-        }
+        // }
 
     }
         return {
