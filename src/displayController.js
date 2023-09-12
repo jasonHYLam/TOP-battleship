@@ -38,8 +38,8 @@ function makeDisplayController() {
         let gameboardContainer = document.querySelector('.gameboard-container.right')
         gameboard.grid.map((row, rowIndex) => {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
-            row.map((space, colIndex) => {
-                let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column')
+            row.map((space) => {
+                populateElementInfo('div', determineText(space), rowElement, 'column')
             })
         })
     }
@@ -65,7 +65,6 @@ function makeDisplayController() {
     function removeBothGameBoards() {
         let gameboardContainers = document.querySelectorAll('.gameboard-container')
         gameboardContainers.forEach(container => container.textContent = "")
-
     }
 
     // do i put clickeventlisteners in displayController, or gameController?
@@ -79,6 +78,7 @@ function makeDisplayController() {
     // so maybe, gameController.playRound()
 
     function getClickables() {
+
         return document.querySelectorAll('.clickable')
     }
 
@@ -92,20 +92,40 @@ function makeDisplayController() {
     // for each of these spaces
     // if clicked, then play a round
     // this means using attack, using the coordinates... i possibly need to add data.col and data.row... okay
-    console.log(getClickables())
-    getClickables().forEach(el => {
-        el.addEventListener('click', () => {
-            console.log(
-            el.dataset.col, el.dataset.row
-            )
-            // i can see that i need to change playRound, so that it takes string
-            // will need to adjust for the computer... adjust it?
-            gameController.playRound([el.dataset.col, el.dataset.row])
+
+    let bodyElement = document.querySelector('body')
+    bodyElement.addEventListener('click', (e) => console.log('asdf'))
+
+    bodyElement.addEventListener('click', (el) => {
+        if (el.target.classList.contains('clickable')) {
+            console.log(el.target)
+            console.log('oh? youre approaching me?')
+            gameController.playRound([el.target.dataset.col, el.target.dataset.row])
             removeBothGameBoards();
             displayBothGameboards();
-
-        })
+            gameController.playRound();
+            removeBothGameBoards();
+            displayBothGameboards();
+        }
     })
+    // console.log(getClickables())
+
+    // getClickables().forEach(el => {
+        
+    //     el.addEventListener('click', () => {
+    //         console.log(
+    //         el.dataset.col, el.dataset.row
+    //         )
+            // i can see that i need to change playRound, so that it takes string
+            // will need to adjust for the computer... adjust it?
+            // gameController.playRound([el.dataset.col, el.dataset.row])
+            // removeBothGameBoards();
+            // displayBothGameboards();
+            // gameController.playRound();
+            // removeBothGameBoards();
+            // displayBothGameboards();
+    //     })
+    // })
     
 }
 
