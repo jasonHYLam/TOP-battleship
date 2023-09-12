@@ -101,15 +101,7 @@ function makeDisplayController() {
 
     // check what this does
     function checkIfGameOver() {
-        console.log(gameController.getPlayerGameboard().checkIsGameOver())
-        console.log(gameController.getComputerGameboard().checkIsGameOver())
-        if (gameController.getPlayerGameboard().checkIsGameOver() ||
-            gameController.getComputerGameboard().checkIsGameOver()
-        ) {
-            return true
-        }
-
-
+        return gameController.getIsGameOver() ? true : false;
     }
 
     function setGameOver() {
@@ -118,9 +110,7 @@ function makeDisplayController() {
             el.classList.remove('clickable')
             el.classList.add('unclickable')
         })
-
     }
-
 
     bodyElement.addEventListener('click', (el) => {
         if (el.target.classList.contains('clickable')) {

@@ -46,6 +46,8 @@ export function makeGameController() {
     function checkIsGameOver(gameboard) {
         if (gameboard.checkIsGameOver()) isGameOver = true;
     }
+
+    const getIsGameOver= () => isGameOver
     
     function visualiseGameboard(gameboard) {
         // how do i convert the gameboard with the spaces, into a console log?
@@ -107,8 +109,6 @@ export function makeGameController() {
             case player:
                 console.log('player')
                 // visualiseGameboard(enemyGameboard);
-                // tryAttackUntilSuccess()
-                // will need to NOT use tryAttackUntilSuccess
                 currentPlayer.attack(enemyGameboard,coords)
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
@@ -117,9 +117,7 @@ export function makeGameController() {
             case computer:
                 console.log('computer')
                 // visualiseGameboard(enemyGameboard);
-                // tryAttackUntilSuccess();
                 tryRandomAttackUntilSuccess();
-                // currentPlayer.randomAttack(enemyGameboard)
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
@@ -130,5 +128,6 @@ export function makeGameController() {
             playRound,
             getPlayerGameboard,
             getComputerGameboard,
+            getIsGameOver,
         }
 }
