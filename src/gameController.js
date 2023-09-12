@@ -65,32 +65,39 @@ export function makeGameController() {
 
     // check if the guessedCoords array changes; if so, the attack was successful.
     // this absolutely must get tested...
-    function tryAttackUntilSuccess() {
+    // function tryAttackUntilSuccess() {
+    //     let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
+    //     let currentGuesses = initialGuesses;
+    //     let validPlayMade = false;
+    //     switch (currentPlayer) {
+    //         case player:
+    //             while (!validPlayMade) {
+    //                 // let [col, row] = prompt('coords to attack, in "x,y"').split(",")
+    //                 const col = parseInt(prompt('col to attack'));
+    //                 const row = parseInt(prompt('row to attack'));
+    //                 currentPlayer.attack(enemyGameboard, [col, row])
+    //                 currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
+    //                 if (initialGuesses !== currentGuesses) validPlayMade = true;
+    //             }
+    //             break;
+    //         case computer:
+    //             while (!validPlayMade) {
+    //                 currentPlayer.randomAttack(enemyGameboard)
+    //                 currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
+    //                 if (initialGuesses !== currentGuesses) validPlayMade = true;
+    //             }
+    //             break;
+    //     }
+    // }
+    function tryRandomAttackUntilSuccess() {
 
         let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
         let currentGuesses = initialGuesses;
-
         let validPlayMade = false;
-
-        switch (currentPlayer) {
-            case player:
-                while (!validPlayMade) {
-                    // let [col, row] = prompt('coords to attack, in "x,y"').split(",")
-                    const col = parseInt(prompt('col to attack'));
-                    const row = parseInt(prompt('row to attack'));
-                    currentPlayer.attack(enemyGameboard, [col, row])
-                    currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-                    if (initialGuesses !== currentGuesses) validPlayMade = true;
-                }
-                break;
-
-            case computer:
-                while (!validPlayMade) {
-                    currentPlayer.randomAttack(enemyGameboard)
-                    currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-                    if (initialGuesses !== currentGuesses) validPlayMade = true;
-                }
-                break;
+        while (!validPlayMade) {
+            currentPlayer.randomAttack(enemyGameboard)
+            currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
+            if (initialGuesses !== currentGuesses) validPlayMade = true;
         }
     }
 
@@ -111,7 +118,8 @@ export function makeGameController() {
                 console.log('computer')
                 // visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess();
-                currentPlayer.randomAttack(enemyGameboard)
+                tryRandomAttackUntilSuccess();
+                // currentPlayer.randomAttack(enemyGameboard)
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
