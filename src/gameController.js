@@ -1,6 +1,6 @@
 import { Gameboard } from "./gameboard";
 import { Player, Computer } from "./player";
-import { displayPlayerGameboard, displayComputerGameboard} from "./displayController";
+// import { displayPlayerGameboard, displayComputerGameboard} from "./displayController";
 
 // i need to change this a little
 // need to display both gameboards...
@@ -9,6 +9,9 @@ export function makeGameController() {
 
     let playerGameboard = new Gameboard();
     let computerGameboard = new Gameboard();
+
+    const getPlayerGameboard = () => playerGameboard
+    const getComputerGameboard = () => computerGameboard
 
     const player = new Player();
     const computer = new Computer();
@@ -132,7 +135,8 @@ export function makeGameController() {
 
     }
         return {
-            tryAttackUntilSuccess,
-            playGame,
+            playRound,
+            getPlayerGameboard,
+            getComputerGameboard,
         }
 }
