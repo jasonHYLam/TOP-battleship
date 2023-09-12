@@ -34,26 +34,38 @@ function makeDisplayController() {
     // make only the left gameboard clickable
 
     // maybe set timeout for enemy... wait a bit
-    function displayPlayerGameboard(gameboard, containerName) {
-        let gameboardContainer = document.querySelector(containerName)
+    function displayPlayerGameboard(gameboard) {
+        let gameboardContainer = document.querySelector('.gameboard-container.right')
         gameboard.grid.map((row, rowIndex) => {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
             row.map((space, colIndex) => {
-                let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column', determineCellStyle(space))
+                let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column')
+            })
+        })
+    }
+
+    // make enemy (computer) gameboard clickable
+    function displayComputerGameboard(gameboard) {
+        let gameboardContainer = document.querySelector('.gameboard-container.left')
+        gameboard.grid.map((row, rowIndex) => {
+            let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
+            row.map((space, colIndex) => {
+                let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column',  determineCellStyle(space) )
                 spaceElement.dataset.col = colIndex;
                 spaceElement.dataset.row = rowIndex;
             })
         })
     }
 
-    function displayComputerGameboard(gameboard, containerName) {
-        let gameboardContainer = document.querySelector(containerName)
-        gameboard.grid.map(row => {
-            let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
-            row.map(space => {
-                populateElementInfo('div', determineText(space), rowElement, 'column')
-            })
-        })
+    function displayBothGameboards() {
+        displayPlayerGameboard(gameController.getPlayerGameboard())
+        displayComputerGameboard(gameController.getComputerGameboard())
+    }
+
+    function removeBothGameBoards() {
+        let gameboardContainers = document.querySelectorAll('.gameboard-container')
+        gameboardContainers.forEach(container => container.textContent = "")
+
     }
 
     // do i put clickeventlisteners in displayController, or gameController?
@@ -74,21 +86,23 @@ function makeDisplayController() {
 
     // would i need to consider a future 2 player version?
 
+    displayBothGameboards();
     // but these need playerGameboard and computerGameboard... 
     // figure it out from tic tac toe...
-    displayPlayerGameboard(gameController.getPlayerGameboard(), '.gameboard-container.left')
-    displayComputerGameboard(gameController.getComputerGameboard(), '.gameboard-container.right')
     // for each of these spaces
     // if clicked, then play a round
     // this means using attack, using the coordinates... i possibly need to add data.col and data.row... okay
     console.log(getClickables())
     getClickables().forEach(el => {
         el.addEventListener('click', () => {
-            console.log('hm')
             console.log(
-            el.target
-
+            el.dataset.col, el.dataset.row
             )
+            // i can see that i need to change playRound, so that it takes string
+            // will need to adjust for the computer... adjust it?
+            gameController.playRound([el.dataset.col, el.dataset.row])
+            removeBothGameBoards();
+            displayBothGameboards();
 
         })
     })

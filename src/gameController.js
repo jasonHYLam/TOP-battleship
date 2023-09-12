@@ -21,13 +21,6 @@ export function makeGameController() {
 
     let isGameOver = false;
 
-    // i can see that i need to change displayGameboard in displayController
-    // cus it takes a reference to the parent container, which needs to change
-    function displayBothGameboards() {
-        displayPlayerGameboard(playerGameboard, '.gameboard-container.left')
-        displayComputerGameboard(enemyGameboard, '.gameboard-container.right')
-    }
-
     // wait, is this mocking? it may be worth a read again...
     // playerGameboard.placeShip(5, 'vertical', [9,6]);
     // playerGameboard.placeShip(4, 'horizontal', [0,8]);
@@ -99,25 +92,24 @@ export function makeGameController() {
         }
     }
 
-    function playRound() {
+    function playRound(coords=null) {
 
         switch (currentPlayer) {
             case player:
                 console.log('player')
-                // displayGameboard(enemyGameboard)
-                displayBothGameboards();
                 visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess()
+                // will need to NOT use tryAttackUntilSuccess
+                currentPlayer.attack(enemyGameboard,coords)
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
             
             case computer:
                 console.log('computer')
-                // displayGameboard(enemyGameboard)
-                displayBothGameboards();
                 visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess();
+                currentPlayer.randomAttack(enemyGameboard)
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
