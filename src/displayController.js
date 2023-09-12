@@ -93,19 +93,55 @@ function makeDisplayController() {
     // if clicked, then play a round
     // this means using attack, using the coordinates... i possibly need to add data.col and data.row... okay
 
+    // click event
     let bodyElement = document.querySelector('body')
-    bodyElement.addEventListener('click', (e) => console.log('asdf'))
+
+    // now, i need to end the game... 
+    // maybe disable all? turn all clickables into unclickable
+
+    // check what this does
+    function checkIfGameOver() {
+        console.log(gameController.getPlayerGameboard().checkIsGameOver())
+        console.log(gameController.getComputerGameboard().checkIsGameOver())
+        if (gameController.getPlayerGameboard().checkIsGameOver() ||
+            gameController.getComputerGameboard().checkIsGameOver()
+        ) {
+            return true
+        }
+
+
+    }
+
+    function setGameOver() {
+        const enemyGrid = document.querySelectorAll('.clickable')
+        enemyGrid.forEach(el => {
+            el.classList.remove('clickable')
+            el.classList.add('unclickable')
+        })
+
+    }
+
 
     bodyElement.addEventListener('click', (el) => {
         if (el.target.classList.contains('clickable')) {
-            console.log(el.target)
-            console.log('oh? youre approaching me?')
-            gameController.playRound([el.target.dataset.col, el.target.dataset.row])
+            const space = el.target.dataset;
+            gameController.playRound([parseInt(space.col), parseInt(space.row)])
             removeBothGameBoards();
             displayBothGameboards();
-            gameController.playRound();
-            removeBothGameBoards();
-            displayBothGameboards();
+
+            // check what this function is doing
+            if (checkIfGameOver()) {
+                console.log('a')
+                setGameOver()
+            }
+
+            else {
+                console.log('b')
+                // i definitely need to do tryAttackUntilSuccess for computer...
+                gameController.playRound();
+                removeBothGameBoards();
+                displayBothGameboards();
+            }
         }
     })
     // console.log(getClickables())

@@ -21,6 +21,8 @@ export function makeGameController() {
 
     let isGameOver = false;
 
+    const getEnemyGameboard = () => enemyGameboard()
+
     // wait, is this mocking? it may be worth a read again...
     // playerGameboard.placeShip(5, 'vertical', [9,6]);
     // playerGameboard.placeShip(4, 'horizontal', [0,8]);
@@ -97,7 +99,7 @@ export function makeGameController() {
         switch (currentPlayer) {
             case player:
                 console.log('player')
-                visualiseGameboard(enemyGameboard);
+                // visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess()
                 // will need to NOT use tryAttackUntilSuccess
                 currentPlayer.attack(enemyGameboard,coords)
@@ -107,7 +109,7 @@ export function makeGameController() {
             
             case computer:
                 console.log('computer')
-                visualiseGameboard(enemyGameboard);
+                // visualiseGameboard(enemyGameboard);
                 // tryAttackUntilSuccess();
                 currentPlayer.randomAttack(enemyGameboard)
                 checkIsGameOver(enemyGameboard);
@@ -116,16 +118,6 @@ export function makeGameController() {
             }
         }
 
-    // use eventListeners now...
-
-
-    function playGame() {
-        // while (!isGameOver) {
-            playRound()
-            if (isGameOver) console.log('GAME IS OVER')
-        // }
-
-    }
         return {
             playRound,
             getPlayerGameboard,
