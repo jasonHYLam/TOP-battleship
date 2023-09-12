@@ -7,6 +7,7 @@ import { Gameboard } from "./gameboard";
 function makeDisplayController() {
 
     let gameController = makeGameController();
+
     function populateElementInfo(divType,  text=null, parent=null, ...classes) {
         const newElement = document.createElement(divType);
         classes.forEach((className) => newElement.classList.add(className));
@@ -14,6 +15,20 @@ function makeDisplayController() {
         if (text) newElement.textContent = text;
         if (parent) parent.appendChild(newElement)
         return newElement;
+    }
+
+    // would i have to use placeShip in this? 
+    function createPreGameGrid() {
+        let initialGrid = document.querySelector(".initial-grid")
+        console.log(initialGrid)
+        for (let i = 0; i < 10; i++) {
+            let rowElement = populateElementInfo('div', null, initialGrid, 'row')
+            for (let j = 0; j < 10; j++) {
+                let spaceElement = populateElementInfo('div', null, rowElement, 'col')
+                spaceElement.dataset.row = i;
+                spaceElement.dataset.col = j;
+            }
+        }
     }
 
     function determineText(space) {
@@ -67,16 +82,6 @@ function makeDisplayController() {
         gameboardContainers.forEach(container => container.textContent = "")
     }
 
-    // do i put clickeventlisteners in displayController, or gameController?
-    // or should i put gameController in displayController?
-
-    // for some reason, it made sense to put displayBoard in gameController
-    // but would it make sense to put playRound in displayController?
-
-    // mm so UI needs to access the playRound function
-
-    // so maybe, gameController.playRound()
-
     function getClickables() {
 
         return document.querySelectorAll('.clickable')
@@ -86,6 +91,7 @@ function makeDisplayController() {
 
     // would i need to consider a future 2 player version?
 
+    createPreGameGrid();
     displayBothGameboards();
     // but these need playerGameboard and computerGameboard... 
     // figure it out from tic tac toe...
@@ -93,17 +99,11 @@ function makeDisplayController() {
     // if clicked, then play a round
     // this means using attack, using the coordinates... i possibly need to add data.col and data.row... okay
 
-    // click event
-    let bodyElement = document.querySelector('body')
-
-    // now, i need to end the game... 
-    // maybe disable all? turn all clickables into unclickable
-
-    // check what this does
     function checkIfGameOver() {
         return gameController.getIsGameOver() ? true : false;
     }
 
+    // maybe disable all? turn all clickables into unclickable
     function setGameOver() {
         const enemyGrid = document.querySelectorAll('.clickable')
         enemyGrid.forEach(el => {
@@ -112,6 +112,8 @@ function makeDisplayController() {
         })
     }
 
+    let bodyElement = document.querySelector('body')
+
     bodyElement.addEventListener('click', (el) => {
         if (el.target.classList.contains('clickable')) {
             const space = el.target.dataset;
@@ -119,46 +121,19 @@ function makeDisplayController() {
             removeBothGameBoards();
             displayBothGameboards();
 
-            // check what this function is doing
-            if (checkIfGameOver()) {
-                console.log('a')
-                setGameOver()
-            }
-
+            if (checkIfGameOver()) setGameOver()
             else {
                 console.log('b')
-                // i definitely need to do tryAttackUntilSuccess for computer...
                 gameController.playRound();
                 removeBothGameBoards();
                 displayBothGameboards();
             }
         }
     })
-    // console.log(getClickables())
-
-    // getClickables().forEach(el => {
-        
-    //     el.addEventListener('click', () => {
-    //         console.log(
-    //         el.dataset.col, el.dataset.row
-    //         )
-            // i can see that i need to change playRound, so that it takes string
-            // will need to adjust for the computer... adjust it?
-            // gameController.playRound([el.dataset.col, el.dataset.row])
-            // removeBothGameBoards();
-            // displayBothGameboards();
-            // gameController.playRound();
-            // removeBothGameBoards();
-            // displayBothGameboards();
-    //     })
-    // })
-    
 }
 
 
 
 export {
-    // displayPlayerGameboard,
-    // displayComputerGameboard,
     makeDisplayController,
 }
