@@ -32,7 +32,7 @@ function makeDisplayController() {
     }
 
 
-    function removeHover() {
+    function removeAllHovered() {
         let previouslyHoveredSpaces = document.querySelectorAll('.hovering')
         if (previouslyHoveredSpaces) {
             previouslyHoveredSpaces.forEach(space => {
@@ -44,10 +44,10 @@ function makeDisplayController() {
     // when hovering, need to get reference to 
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('pregame-space')) {
-            console.log(e.target)
-            removeHover();
+            removeAllHovered();
             e.target.classList.add('hovering')
 
+            // maybe check if out of bounds as well
             extendHover()
         }
     })
@@ -61,27 +61,53 @@ function makeDisplayController() {
         let shipLength = document.querySelector('.selected-ship')
         let list = shipLength.classList
 
+        function determineOtherHoverElements(shipLength) {
+            let head = document.querySelector('.hovering')
+            // get reference to row and col
+            const headRow = parseInt(head.dataset.row)
+            const headCol = parseInt(head.dataset.col)
+            console.log(headCol, headRow)
+
+            // get the next few, using array logic
+            let numberOfAdditionalHovers = shipLength - 1;
+            for (let i = headCol + 1; i < headCol + 1 + numberOfAdditionalHovers; i++) {
+                // check if out of bounds; may have to make thingie red as well
+                if (i > 9) break
+                let otherElement = document.querySelector(`[data-col="${i}"][data-row="${headRow}"]`)
+                console.log(otherElement)
+
+                // then set those spaces to be hovering too
+                otherElement.classList.add('hovering')
+                // for horizontal, would be same row, increase column
+            }
+        }
+
         //just wanna get five-ship or four-ship...
         switch (true) {
             case list.contains('five-long'):
-                // need to do something, ie hover on 5 elements, and make green?
-                let head = document.querySelector('.hovering')
-                const headRow = head.dataset.row
-                const headCol = head.dataset.col
-                console.log(headCol, headRow)
-                // get reference to row and col
-                // get the next few, using array logic
-                // then set those spaces to be hovering too
+                determineOtherHoverElements(5)
+                break;
+
+            case list.contains('four-long'):
+                determineOtherHoverElements(4)
+                break;
+
+            case list.contains('three-long'):
+                determineOtherHoverElements(3)
+                break;
+
+            case list.contains('two-long'):
+                determineOtherHoverElements(2)
+                break;
 
         }
-
-
     }
 
     // clicking on ships
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship')) {
             removeClassFromPreviouslyClicked();
+            removeAllHovered();
             (e.target.classList.add('selected-ship'))
 
             
