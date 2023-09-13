@@ -2,11 +2,9 @@
 import { makeGameController } from "./gameController";
 import { Gameboard } from "./gameboard";
 
-// i am gonna put gameController in displayCOntroller;
-// will need playRound function in the eventListener
 function makeDisplayController() {
 
-    let gameController = makeGameController();
+    let bodyElement = document.querySelector('body')
 
     function populateElementInfo(divType,  text=null, parent=null, ...classes) {
         const newElement = document.createElement(divType);
@@ -17,6 +15,8 @@ function makeDisplayController() {
         return newElement;
     }
 
+    // pregame display code
+
     // would i have to use placeShip in this? 
     function createPreGameGrid() {
         let initialGrid = document.querySelector(".initial-grid")
@@ -24,12 +24,81 @@ function makeDisplayController() {
         for (let i = 0; i < 10; i++) {
             let rowElement = populateElementInfo('div', null, initialGrid, 'row')
             for (let j = 0; j < 10; j++) {
-                let spaceElement = populateElementInfo('div', null, rowElement, 'col')
+                let spaceElement = populateElementInfo('div', '', rowElement, 'column', 'pregame-space')
                 spaceElement.dataset.row = i;
                 spaceElement.dataset.col = j;
             }
         }
     }
+
+
+    function removeHover() {
+        let previouslyHoveredSpaces = document.querySelectorAll('.hovering')
+        if (previouslyHoveredSpaces) {
+            previouslyHoveredSpaces.forEach(space => {
+                space.classList.remove('hovering')
+            })
+        }
+    }
+    
+    // when hovering, need to get reference to 
+    bodyElement.addEventListener('mouseover', (e) => {
+        if (e.target.classList.contains('pregame-space')) {
+            console.log(e.target)
+            removeHover();
+            e.target.classList.add('hovering')
+
+            extendHover()
+        }
+    })
+
+    function removeClassFromPreviouslyClicked() {
+        let previousSelectedShip = document.querySelector('.selected-ship')
+        if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship')
+    }
+
+    function extendHover() {
+        let shipLength = document.querySelector('.selected-ship')
+        let list = shipLength.classList
+
+        //just wanna get five-ship or four-ship...
+        switch (true) {
+            case list.contains('five-long'):
+                // need to do something, ie hover on 5 elements, and make green?
+                let head = document.querySelector('.hovering')
+                const headRow = head.dataset.row
+                const headCol = head.dataset.col
+                console.log(headCol, headRow)
+                // get reference to row and col
+                // get the next few, using array logic
+                // then set those spaces to be hovering too
+
+        }
+
+
+    }
+
+    // clicking on ships
+    bodyElement.addEventListener('click', (e) => {
+        if (e.target.classList.contains('ship')) {
+            removeClassFromPreviouslyClicked();
+            (e.target.classList.add('selected-ship'))
+
+            
+        }
+    })
+
+    // let pregameSpaces = document.querySelectorAll('.pregame-space')
+    // pregameSpaces.forEach(space => {
+    //     space.addEventListener('mouseover', (e) => {
+    //         console.log(e.target)
+    //     })
+    // })
+
+    // function to change the look of the ship when clicked
+    // function to reset the look of the previously clicked ship
+
+    // function to hover on the grid when the mouse is over it
 
     function determineText(space) {
         if (!space.hasShip && !space.wasGuessed) return '.'
@@ -47,6 +116,8 @@ function makeDisplayController() {
 
     // also, make divs clickable in css. don't allow clicks on already clicked.
     // make only the left gameboard clickable
+
+    // game code
 
     // maybe set timeout for enemy... wait a bit
     function displayPlayerGameboard(gameboard) {
@@ -71,6 +142,8 @@ function makeDisplayController() {
             })
         })
     }
+
+    let gameController = makeGameController();
 
     function displayBothGameboards() {
         displayPlayerGameboard(gameController.getPlayerGameboard())
@@ -112,7 +185,6 @@ function makeDisplayController() {
         })
     }
 
-    let bodyElement = document.querySelector('body')
 
     bodyElement.addEventListener('click', (el) => {
         if (el.target.classList.contains('clickable')) {

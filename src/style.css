@@ -17,7 +17,10 @@ body {
 }
 
 .popup {
-    position: absolute;
+    /* position: absolute; */
+    width: 1500px;
+    height: 700px;
+    background-color: darkslategrey;
 }
 
 .blocker {
@@ -28,6 +31,49 @@ body {
     content: '';
     position: fixed;
 }
+
+.pregame-space {
+    margin: 10px;
+    /* width: 30px;
+    height: 30px; */
+    border: black 1px solid;
+    background-color: white;
+}
+
+.pregame-container {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+.ship-container {
+    height: auto;
+    display: flex;
+    flex-direction:column;
+    gap: 20px;
+}
+
+.ship {
+    height: 30px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.five-long {
+    width: 150px;
+}
+
+.four-long {
+    width: 120px;
+}
+
+.three-long {
+    width: 90px;
+}
+
+.two-long {
+    width: 30px;
+}
+
 .gameboard-container, .initial-grid {
     width: 500px;
     height: 500px;
@@ -49,3 +95,14 @@ body {
 }
 
 
+.pregame-space:hover {
+
+}
+
+.hovering {
+    background-color: aqua;
+}
+
+.selected-ship {
+    background-color: beige;
+}
