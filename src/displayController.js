@@ -52,7 +52,12 @@ function makeDisplayController() {
         }
     })
 
-    function removeClassFromPreviouslyClicked() {
+    // when the mouse leaves the grid, hide the hovered spaces
+    document.querySelector('.initial-grid').addEventListener('mouseleave', () => {
+        removeAllHovered();
+    })
+
+    function removeClassFromPreviouslySelected() {
         let previousSelectedShip = document.querySelector('.selected-ship')
         if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship')
     }
@@ -99,27 +104,39 @@ function makeDisplayController() {
             case list.contains('two-long'):
                 determineOtherHoverElements(2)
                 break;
-
         }
     }
+
+    function placeShipOnInitialBoard() {
+
+    }
+
+    // only allow click when ship is selected
+    // clicking on spaces on grid
+    bodyElement.addEventListener('click', (e) => {
+        if (document.querySelector('.selected-ship') === null) return
+        if (e.target.classList.contains('pregame-space')) {
+            let allHovered = document.querySelectorAll('.hovering')
+            allHovered.forEach(space => space.classList.add('ship-in-space'))
+            // wanna put //ship-in-space in these spaces
+            // maybe convert hover into ship-in-space
+            // maybe indicate that the ship has been placed already... so grey out, and don't allow click?
+            removeClassFromPreviouslySelected();
+            removeAllHovered();
+        }
+    })
+
 
     // clicking on ships
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship')) {
-            removeClassFromPreviouslyClicked();
+            removeClassFromPreviouslySelected();
             removeAllHovered();
             (e.target.classList.add('selected-ship'))
 
             
         }
     })
-
-    // let pregameSpaces = document.querySelectorAll('.pregame-space')
-    // pregameSpaces.forEach(space => {
-    //     space.addEventListener('mouseover', (e) => {
-    //         console.log(e.target)
-    //     })
-    // })
 
     // function to change the look of the ship when clicked
     // function to reset the look of the previously clicked ship

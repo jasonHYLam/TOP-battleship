@@ -33,11 +33,12 @@ body {
 }
 
 .pregame-space {
-    margin: 10px;
+    margin: 1px;
     /* width: 30px;
     height: 30px; */
     border: black 1px solid;
     background-color: white;
+    cursor: pointer;
 }
 
 .pregame-container {
@@ -105,4 +106,8 @@ body {
 
 .selected-ship {
     background-color: beige;
+}
+
+.ship-in-space {
+    background-color: white;
 }
