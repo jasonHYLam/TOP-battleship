@@ -20,7 +20,7 @@ body {
     /* position: absolute; */
     width: 1500px;
     height: 700px;
-    background-color: darkslategrey;
+    background-color: cornflowerblue;
 }
 
 .blocker {
@@ -59,20 +59,20 @@ body {
     cursor: pointer;
 }
 
-.five-long {
+.carrier {
     width: 150px;
 }
 
-.four-long {
+.battleship {
     width: 120px;
 }
 
-.three-long {
+.cruiser, .submarine {
     width: 90px;
 }
 
-.two-long {
-    width: 30px;
+.destroyer {
+    width: 60px;
 }
 
 .gameboard-container, .initial-grid {
@@ -110,4 +110,8 @@ body {
 
 .ship-in-space {
     background-color: white;
+}
+
+.grey-out {
+    background-color: darkslategrey;
 }

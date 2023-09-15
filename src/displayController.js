@@ -48,7 +48,8 @@ function makeDisplayController() {
             e.target.classList.add('hovering')
 
             // maybe check if out of bounds as well
-            extendHover()
+        if (document.querySelector('.selected-ship')) extendHover();
+            
         }
     })
 
@@ -89,19 +90,23 @@ function makeDisplayController() {
 
         //just wanna get five-ship or four-ship...
         switch (true) {
-            case list.contains('five-long'):
+            case list.contains('carrier'):
                 determineOtherHoverElements(5)
                 break;
 
-            case list.contains('four-long'):
+            case list.contains('battleship'):
                 determineOtherHoverElements(4)
                 break;
 
-            case list.contains('three-long'):
+            case list.contains('cruiser'):
                 determineOtherHoverElements(3)
                 break;
 
-            case list.contains('two-long'):
+            case list.contains('submarine'):
+                determineOtherHoverElements(3)
+                break;
+
+            case list.contains('destroyer'):
                 determineOtherHoverElements(2)
                 break;
         }
@@ -111,25 +116,115 @@ function makeDisplayController() {
 
     }
 
-    // only allow click when ship is selected
+    function greyOutSelectedShip() {
+        document.querySelector('.selected-ship').classList.add('grey-out')
+    }
+
+    function addShipClassToSpace(space) {
+        let selectedShip = document.querySelector('.selected-ship')
+        let classList = selectedShip.classList
+        space.classList.add('ship-in-space')
+        switch (true) {
+            case classList.contains('carrier'):
+                space.classList.add('carrier');
+                break;
+
+            case classList.contains('battleship'):
+                space.classList.add('battleship');
+                break;
+
+            case classList.contains('cruiser'):
+                space.classList.add('cruiser');
+                break;
+
+            case classList.contains('submarine'):
+                space.classList.add('submarine');
+                break;
+
+            case classList.contains('destroyer'):
+                space.classList.add('destroyer');
+                break;
+
+        }
+    }
     // clicking on spaces on grid
     bodyElement.addEventListener('click', (e) => {
+        // don't allow click if ship is not selected
         if (document.querySelector('.selected-ship') === null) return
         if (e.target.classList.contains('pregame-space')) {
             let allHovered = document.querySelectorAll('.hovering')
-            allHovered.forEach(space => space.classList.add('ship-in-space'))
+            // allHovered.forEach(space => space.classList.add('ship-in-space'))
+            allHovered.forEach(space => addShipClassToSpace(space))
+            // maybe also put placed-ship-head where the click is. so that i can make it change color if hovered over
+            //maybe i need ship ids
+            //maybe i need stuff like destroyer, carrier etc
             // wanna put //ship-in-space in these spaces
             // maybe convert hover into ship-in-space
             // maybe indicate that the ship has been placed already... so grey out, and don't allow click?
+            greyOutSelectedShip();
             removeClassFromPreviouslySelected();
             removeAllHovered();
         }
     })
 
 
+    
     // clicking on ships
+    // if clicking on already placed ship, then remove it
+    // if contains destoryer, then remove destroyer
+
+    function removeCorrespondingShipFromGrid(shipToReplace) {
+        let classList =shipToReplace.classList
+        console.log(classList)
+        // if class list contains any of the ships, then 
+        switch (true) {
+            case classList.contains('carrier'):
+                console.log('amazing')
+                console.log(document.querySelectorAll('.pregame-space.carrier'))
+                document.querySelectorAll('.pregame-space.carrier').forEach(space => {
+                    space.classList.remove('carrier')
+                    space.classList.remove('ship-in-space')
+                }
+                    )
+                break;
+
+            case classList.contains('battleship'):
+                document.querySelectorAll('.pregame-space.battleship').forEach(space => {
+                    space.classList.remove('battleship')
+                    space.classList.remove('ship-in-space')
+                })
+                break;
+
+            case classList.contains('cruiser'):
+                document.querySelectorAll('.pregame-space.cruiser').forEach(space => {
+                    space.classList.remove('cruiser')
+                    space.classList.remove('ship-in-space')
+                })
+                break;
+
+            case classList.contains('submarine'):
+                document.querySelectorAll('.pregame-space.submarine').forEach(space => {
+                    space.classList.remove('submarine')
+                    space.classList.remove('ship-in-space')
+                })
+                break;
+
+            case classList.contains('destroyer'):
+                document.querySelectorAll('.pregame-space.destroyer').forEach(space => {
+                    space.classList.remove('destroyer')
+                    space.classList.remove('ship-in-space')
+                })
+                break;
+
+        }
+        // remove the corresponding ship on the board
+
+    }
+
+    // click on ship for placing on board
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship')) {
+            if (e.target.classList.contains('grey-out')) removeCorrespondingShipFromGrid(e.target);
             removeClassFromPreviouslySelected();
             removeAllHovered();
             (e.target.classList.add('selected-ship'))
