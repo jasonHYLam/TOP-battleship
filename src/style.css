@@ -96,9 +96,6 @@ body {
 }
 
 
-.pregame-space:hover {
-
-}
 
 .hovering {
     background-color: aqua;
@@ -106,6 +103,8 @@ body {
 
 .selected-ship {
     background-color: beige;
+    border: white solid 2px;
+    box-sizing: border-box;
 }
 
 .ship-in-space {

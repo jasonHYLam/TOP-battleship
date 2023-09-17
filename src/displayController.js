@@ -64,8 +64,9 @@ function makeDisplayController() {
     }
 
     function extendHover() {
-        let shipLength = document.querySelector('.selected-ship')
-        let list = shipLength.classList
+        let selectedShip = document.querySelector('.selected-ship')
+        let list = selectedShip.classList
+        console.log(selectedShip.dataset.length)
 
         function determineOtherHoverElements(shipLength) {
             let head = document.querySelector('.hovering')
@@ -76,6 +77,7 @@ function makeDisplayController() {
 
             // get the next few, using array logic
             let numberOfAdditionalHovers = shipLength - 1;
+            console.log(`number of addit hovers: ${numberOfAdditionalHovers}`)
             for (let i = headCol + 1; i < headCol + 1 + numberOfAdditionalHovers; i++) {
                 // check if out of bounds; may have to make thingie red as well
                 if (i > 9) break
@@ -88,28 +90,29 @@ function makeDisplayController() {
             }
         }
 
-        //just wanna get five-ship or four-ship...
-        switch (true) {
-            case list.contains('carrier'):
-                determineOtherHoverElements(5)
-                break;
+        // refactor to use data-length rather than switch and ship type...
+        determineOtherHoverElements(selectedShip.dataset.length)
+        // switch (true) {
+        //     case list.contains('carrier'):
+        //         determineOtherHoverElements(5)
+        //         break;
 
-            case list.contains('battleship'):
-                determineOtherHoverElements(4)
-                break;
+        //     case list.contains('battleship'):
+        //         determineOtherHoverElements(4)
+        //         break;
 
-            case list.contains('cruiser'):
-                determineOtherHoverElements(3)
-                break;
+        //     case list.contains('cruiser'):
+        //         determineOtherHoverElements(3)
+        //         break;
 
-            case list.contains('submarine'):
-                determineOtherHoverElements(3)
-                break;
+        //     case list.contains('submarine'):
+        //         determineOtherHoverElements(3)
+        //         break;
 
-            case list.contains('destroyer'):
-                determineOtherHoverElements(2)
-                break;
-        }
+        //     case list.contains('destroyer'):
+        //         determineOtherHoverElements(2)
+        //         break;
+        // }
     }
 
     function placeShipOnInitialBoard() {
@@ -148,6 +151,11 @@ function makeDisplayController() {
         }
     }
     // clicking on spaces on grid
+
+    // i need to not add stuff when there's a element too close... do i need to use row and column?
+    //maybe
+    // check if can place..
+
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
         if (document.querySelector('.selected-ship') === null) return
@@ -167,6 +175,31 @@ function makeDisplayController() {
         }
     })
 
+    // color for invalid placement
+    // if out of bounds, or if there's already a ship
+    // maybe requires row and col, and length
+    // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
+
+    //check to see if can place ship
+
+    function returnLengthOfShip(classList) {
+        switch (true) {
+
+
+        }
+
+    }
+    function checkIfCanPlaceShip() {
+        // requires 
+        // maybe requires knowing length of class
+        document.querySelector('.selected-ship')
+
+
+    
+        // maybe requires vertical and horizontal
+        // maybe requires row and column and data attribute
+
+    }
 
     
     // clicking on ships
@@ -179,7 +212,6 @@ function makeDisplayController() {
         // if class list contains any of the ships, then 
         switch (true) {
             case classList.contains('carrier'):
-                console.log('amazing')
                 console.log(document.querySelectorAll('.pregame-space.carrier'))
                 document.querySelectorAll('.pregame-space.carrier').forEach(space => {
                     space.classList.remove('carrier')
