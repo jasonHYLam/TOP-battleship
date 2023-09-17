@@ -6,6 +6,7 @@ function makeDisplayController() {
 
     let bodyElement = document.querySelector('body')
 
+
     function populateElementInfo(divType,  text=null, parent=null, ...classes) {
         const newElement = document.createElement(divType);
         classes.forEach((className) => newElement.classList.add(className));
@@ -65,24 +66,19 @@ function makeDisplayController() {
 
     function extendHover() {
         let selectedShip = document.querySelector('.selected-ship')
-        let list = selectedShip.classList
-        console.log(selectedShip.dataset.length)
 
         function determineOtherHoverElements(shipLength) {
             let head = document.querySelector('.hovering')
             // get reference to row and col
             const headRow = parseInt(head.dataset.row)
             const headCol = parseInt(head.dataset.col)
-            console.log(headCol, headRow)
 
             // get the next few, using array logic
             let numberOfAdditionalHovers = shipLength - 1;
-            console.log(`number of addit hovers: ${numberOfAdditionalHovers}`)
             for (let i = headCol + 1; i < headCol + 1 + numberOfAdditionalHovers; i++) {
                 // check if out of bounds; may have to make thingie red as well
                 if (i > 9) break
                 let otherElement = document.querySelector(`[data-col="${i}"][data-row="${headRow}"]`)
-                console.log(otherElement)
 
                 // then set those spaces to be hovering too
                 otherElement.classList.add('hovering')
@@ -90,33 +86,7 @@ function makeDisplayController() {
             }
         }
 
-        // refactor to use data-length rather than switch and ship type...
         determineOtherHoverElements(selectedShip.dataset.length)
-        // switch (true) {
-        //     case list.contains('carrier'):
-        //         determineOtherHoverElements(5)
-        //         break;
-
-        //     case list.contains('battleship'):
-        //         determineOtherHoverElements(4)
-        //         break;
-
-        //     case list.contains('cruiser'):
-        //         determineOtherHoverElements(3)
-        //         break;
-
-        //     case list.contains('submarine'):
-        //         determineOtherHoverElements(3)
-        //         break;
-
-        //     case list.contains('destroyer'):
-        //         determineOtherHoverElements(2)
-        //         break;
-        // }
-    }
-
-    function placeShipOnInitialBoard() {
-
     }
 
     function greyOutSelectedShip() {
@@ -160,18 +130,22 @@ function makeDisplayController() {
         // don't allow click if ship is not selected
         if (document.querySelector('.selected-ship') === null) return
         if (e.target.classList.contains('pregame-space')) {
-            let allHovered = document.querySelectorAll('.hovering')
-            // allHovered.forEach(space => space.classList.add('ship-in-space'))
-            allHovered.forEach(space => addShipClassToSpace(space))
-            // maybe also put placed-ship-head where the click is. so that i can make it change color if hovered over
-            //maybe i need ship ids
-            //maybe i need stuff like destroyer, carrier etc
-            // wanna put //ship-in-space in these spaces
-            // maybe convert hover into ship-in-space
-            // maybe indicate that the ship has been placed already... so grey out, and don't allow click?
-            greyOutSelectedShip();
-            removeClassFromPreviouslySelected();
-            removeAllHovered();
+        
+            // if statement for checkIfCanPlaceShip
+            console.log(checkInvalidPlacement(e.target))
+            if (checkInvalidPlacement(e.target)) {
+                console.log('no...')
+                return
+            }
+            else {
+                console.log('yes')
+                let allHovered = document.querySelectorAll('.hovering')
+                allHovered.forEach(space => addShipClassToSpace(space))
+                // maybe also put placed-ship-head where the click is. so that i can make it change color if hovered over
+                greyOutSelectedShip();
+                removeClassFromPreviouslySelected();
+                removeAllHovered();
+            }
         }
     })
 
@@ -182,23 +156,30 @@ function makeDisplayController() {
 
     //check to see if can place ship
 
-    function returnLengthOfShip(classList) {
-        switch (true) {
+    function checkInvalidPlacement(clickTarget) {
+        let cannotPlaceShip = false;
+        const selectedShip = document.querySelector('.selected-ship')
+        const length = parseInt(selectedShip.dataset.length)
+        const headRow = parseInt(clickTarget.dataset.row)
+        const headCol = parseInt(clickTarget.dataset.col)
 
+        // maybe requires vertical and horizontal
 
+        function checkIfAlreadyPlaced(col, row) {
+            console.log(col, row)
+            console.log(document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList)
+
+            return document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList.contains('ship-in-space')
         }
 
-    }
-    function checkIfCanPlaceShip() {
-        // requires 
-        // maybe requires knowing length of class
-        document.querySelector('.selected-ship')
-
-
-    
-        // maybe requires vertical and horizontal
-        // maybe requires row and column and data attribute
-
+        // if horizontal
+        // means row is the same, and columns change
+        for (let i = headCol; i < headCol + length; i++) {
+            if (i > 10) cannotPlaceShip = true;
+            if (checkIfAlreadyPlaced(i, headRow)) cannotPlaceShip = true;
+        }
+        console.log(`can i place ship? ${cannotPlaceShip}`)
+        return cannotPlaceShip;
     }
 
     
@@ -212,7 +193,6 @@ function makeDisplayController() {
         // if class list contains any of the ships, then 
         switch (true) {
             case classList.contains('carrier'):
-                console.log(document.querySelectorAll('.pregame-space.carrier'))
                 document.querySelectorAll('.pregame-space.carrier').forEach(space => {
                     space.classList.remove('carrier')
                     space.classList.remove('ship-in-space')
