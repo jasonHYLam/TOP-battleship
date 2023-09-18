@@ -111,7 +111,6 @@ function makeDisplayController() {
             // get the next few, using array logic
             let shipLength = parseInt(dataLength);
             
-            // fix console log error here, and make red here too
             for (let i = headCol; i < headCol + shipLength; i++) {
                 if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
                     invalidPlacement = true;
@@ -178,6 +177,22 @@ function makeDisplayController() {
     // check if can place..
 
     bodyElement.addEventListener('click', (e) => {
+        if (e.target.classList.contains('ship-head')) {
+            console.log('clicked ship head')
+            // add the rotate decoration
+
+            // move it again, show hover
+            // may need to use extendHover. 
+            extendHover(e.target)
+            // how do i place the ship, and remove the ship?
+
+
+            // try to rotate
+
+        }
+    })
+
+    bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
         if (document.querySelector('.selected-ship') === null) return
         if (e.target.classList.contains('pregame-space')) {
@@ -188,11 +203,12 @@ function makeDisplayController() {
             allHovered.forEach(space => addShipClassToSpace(space))
             // maybe also put placed-ship-head where the click is. so that i can make it change color if hovered over
             greyOutSelectedShip();
-            addShipHead(e.target)
             removeClassFromPreviouslySelected();
             removeAllHovered();
+            addShipHead(e.target);
         }
     })
+
 
     // color for invalid placement
     // if out of bounds, or if there's already a ship
@@ -223,52 +239,38 @@ function makeDisplayController() {
         return cannotPlaceShip;
     }
 
-
-    
-    
     // clicking on ships
     // if clicking on already placed ship, then remove it
     // if contains destoryer, then remove destroyer
 
-    function removeCorrespondingShipFromGrid(shipToReplace) {
+    function removeCorrespondingShipFromGridForAllShips(shipToReplace) {
         let classList =shipToReplace.classList
-        console.log(classList)
         // if class list contains any of the ships, then 
+        function removeShipFromGrid(shipClass) {
+            document.querySelectorAll(`.${shipClass}`).forEach(space => {
+                space.classList.remove(shipClass)
+                space.classList.remove('ship-in-space')
+            })
+        }
         switch (true) {
             case classList.contains('carrier'):
-                document.querySelectorAll('.pregame-space.carrier').forEach(space => {
-                    space.classList.remove('carrier')
-                    space.classList.remove('ship-in-space')
-                }
-                    )
+                removeShipFromGrid('carrier')
                 break;
 
             case classList.contains('battleship'):
-                document.querySelectorAll('.pregame-space.battleship').forEach(space => {
-                    space.classList.remove('battleship')
-                    space.classList.remove('ship-in-space')
-                })
+                removeShipFromGrid('battleship')
                 break;
 
             case classList.contains('cruiser'):
-                document.querySelectorAll('.pregame-space.cruiser').forEach(space => {
-                    space.classList.remove('cruiser')
-                    space.classList.remove('ship-in-space')
-                })
+                removeShipFromGrid('cruiser')
                 break;
 
             case classList.contains('submarine'):
-                document.querySelectorAll('.pregame-space.submarine').forEach(space => {
-                    space.classList.remove('submarine')
-                    space.classList.remove('ship-in-space')
-                })
+                removeShipFromGrid('submarine')
                 break;
 
             case classList.contains('destroyer'):
-                document.querySelectorAll('.pregame-space.destroyer').forEach(space => {
-                    space.classList.remove('destroyer')
-                    space.classList.remove('ship-in-space')
-                })
+                removeShipFromGrid('destroyer')
                 break;
 
         }
@@ -279,7 +281,7 @@ function makeDisplayController() {
     // click on ship for placing on board
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship')) {
-            if (e.target.classList.contains('grey-out')) removeCorrespondingShipFromGrid(e.target);
+            if (e.target.classList.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
             removeClassFromPreviouslySelected();
             removeAllHovered();
             (e.target.classList.add('selected-ship'))
