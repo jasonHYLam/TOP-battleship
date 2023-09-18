@@ -40,6 +40,32 @@ function makeDisplayController() {
     function removeAllHovered() {
         removeHoveredClass('valid-hovering');
         removeHoveredClass('invalid-hovering');
+        removeHoveredClass('ship-head-hover')
+    }
+
+    function addShipHeadStyleForAllShips(clickTarget) {
+        let list = clickTarget.classList
+        function addShipHeadStyle(shipClass) {
+            document.querySelector(`.${shipClass}.ship-head`).classList.add('ship-head-hover')
+        }
+        switch (true) {
+            case list.contains('carrier'): 
+                addShipHeadStyle('carrier'); break
+
+            case list.contains('battleship'): 
+                addShipHeadStyle('battleship'); break
+
+            case list.contains('cruiser'): 
+                addShipHeadStyle('cruiser'); break
+
+            case list.contains('submarine'): 
+                addShipHeadStyle('submarine'); break
+
+            case list.contains('destroyer'): 
+                addShipHeadStyle('destroyer'); break
+
+        }
+
     }
     
     // when hovering, need to get reference to 
@@ -47,6 +73,8 @@ function makeDisplayController() {
         if (e.target.classList.contains('pregame-space')) {
             removeAllHovered();
             if (document.querySelector('.selected-ship')) extendHover(e.target);
+            addShipHeadStyleForAllShips(e.target)
+
         }
     })
 
@@ -135,6 +163,14 @@ function makeDisplayController() {
 
         }
     }
+
+    function addShipHead(clickTarget) {
+        console.log(clickTarget)
+        console.log(clickTarget.classList)
+        clickTarget.classList.add('ship-head')
+        console.log(clickTarget.classList)
+    }
+
     // clicking on spaces on grid
 
     // i need to not add stuff when there's a element too close... do i need to use row and column?
@@ -146,14 +182,13 @@ function makeDisplayController() {
         if (document.querySelector('.selected-ship') === null) return
         if (e.target.classList.contains('pregame-space')) {
         
-            // if statement for checkIfCanPlaceShip
-            console.log(checkInvalidPlacement(e.target))
             if (checkInvalidPlacement(e.target)) return
 
             let allHovered = document.querySelectorAll('.valid-hovering')
             allHovered.forEach(space => addShipClassToSpace(space))
             // maybe also put placed-ship-head where the click is. so that i can make it change color if hovered over
             greyOutSelectedShip();
+            addShipHead(e.target)
             removeClassFromPreviouslySelected();
             removeAllHovered();
         }
@@ -188,6 +223,8 @@ function makeDisplayController() {
         return cannotPlaceShip;
     }
 
+
+    
     
     // clicking on ships
     // if clicking on already placed ship, then remove it

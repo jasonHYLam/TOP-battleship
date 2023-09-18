@@ -118,3 +118,7 @@ body {
 .invalid-hovering {
     background-color: coral;
 }
+
+.ship-head-hover {
+    background-color: goldenrod;
+}
