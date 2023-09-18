@@ -3,6 +3,25 @@ import { Gameboard } from "./gameboard";
 
 function makeDisplayController() {
 
+    function findShipFromClassListAndPerformAction(list, action) {
+        switch (true) {
+            case list.contains('carrier'):
+                action('carrier'); break;
+
+            case list.contains('battleship'):
+                action('battleship'); break;
+
+            case list.contains('cruiser'):
+                action('cruiser'); break;
+
+            case list.contains('submarine'):
+                action('submarine'); break;
+
+            case list.contains('destroyer'):
+                action('destroyer'); break;
+        }
+    }
+
     let shipLengths = {
         'carrier': 5,
         'battleship': 4,
@@ -23,6 +42,7 @@ function makeDisplayController() {
     function setCurrentShipFromDOM(element) {
         console.log(element)
         let list = element.classList
+        // findShipFromClassListAndPerformAction(list, setCurrentShip)
         switch (true) {
             case list.contains('carrier'):
                 setCurrentShip('carrier'); break;
@@ -128,6 +148,7 @@ function makeDisplayController() {
     })
 
     // dont change this
+    // is this why stuff is weird?
     function removeClassFromPreviouslySelected() {
         let previousSelectedShip = document.querySelector('.selected-ship-off-grid')
         if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship-off-grid')
@@ -196,11 +217,33 @@ function makeDisplayController() {
         if (e.target.classList.contains('ship-head')) {
             console.log('clicked ship head')
 
-            function getCorrespondingShipFromGrid(clickTarget) {
+            function setCorrespondingShipFromGrid(clickTarget) {
                 let list = clickTarget.classList
                 // if contains a ship, then 
+                switch (true) {
+                    case list.contains('carrier'):
+                        setCurrentShip('carrier')
+                        break;
 
+                    case list.contains('battleship'):
+                        setCurrentShip('battleship')
+                        break;
+
+                    case list.contains('cruiser'):
+                        setCurrentShip('cruiser')
+                        break;
+
+                    case list.contains('battleship'):
+                        setCurrentShip('battleship')
+                        break;
+
+                    case list.contains('destroyer'):
+                        setCurrentShip('destroyer')
+                        break;
+                }
             }
+
+            setCorrespondingShipFromGrid(e.target)
             // add the rotate decoration
 
             // get the ship that was clicked
@@ -216,6 +259,7 @@ function makeDisplayController() {
         }
     })
 
+    // clicking on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
         // change this
@@ -255,15 +299,18 @@ function makeDisplayController() {
     }
 
     // remove the corresponding ship from the board, when clicking on it.
+    // i think the error is here. but i didn't have this problem before i thought
     function removeCorrespondingShipFromGridForAllShips(shipToReplace) {
         function removeShipFromGrid(shipClass) {
-            document.querySelectorAll(`.${shipClass}`).forEach(space => {
+            const grid = document.querySelector('.initial-grid')
+            grid.querySelectorAll(`.${shipClass}`).forEach(space => {
                 space.classList.remove(shipClass)
                 space.classList.remove('ship-in-space')
             })
         }
 
         let classList = shipToReplace.classList;
+        // findShipFromClassListAndPerformAction(classList, removeShipFromGrid);
         switch (true) {
             case classList.contains('carrier'):
                 removeShipFromGrid('carrier'); break;
@@ -289,7 +336,10 @@ function makeDisplayController() {
             removeClassFromPreviouslySelected();
             removeAllHovered();
             (e.target.classList.add('selected-ship-off-grid'))
+            console.log(currentShip)
             setCurrentShipFromDOM(e.target)
+            // ah what have i done
+            console.log(currentShip)
         }
     })
 
