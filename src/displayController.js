@@ -42,23 +42,23 @@ function makeDisplayController() {
     function setCurrentShipFromDOM(element) {
         console.log(element)
         let list = element.classList
-        // findShipFromClassListAndPerformAction(list, setCurrentShip)
-        switch (true) {
-            case list.contains('carrier'):
-                setCurrentShip('carrier'); break;
+        findShipFromClassListAndPerformAction(list, setCurrentShip)
+        // switch (true) {
+        //     case list.contains('carrier'):
+        //         setCurrentShip('carrier'); break;
 
-            case list.contains('battleship'):
-                setCurrentShip('battleship'); break;
+        //     case list.contains('battleship'):
+        //         setCurrentShip('battleship'); break;
 
-            case list.contains('cruiser'):
-                setCurrentShip('cruiser'); break;
+        //     case list.contains('cruiser'):
+        //         setCurrentShip('cruiser'); break;
 
-            case list.contains('submarine'):
-                setCurrentShip('submarine'); break;
+        //     case list.contains('submarine'):
+        //         setCurrentShip('submarine'); break;
 
-            case list.contains('destroyer'):
-                setCurrentShip('destroyer'); break;
-        }
+        //     case list.contains('destroyer'):
+        //         setCurrentShip('destroyer'); break;
+        // }
     }
 
 
@@ -67,7 +67,6 @@ function makeDisplayController() {
     }
 
     function getCurrentShipLength() {
-        console.log(shipLengths[currentShip]);
         return shipLengths[currentShip];
     }
 
@@ -115,22 +114,23 @@ function makeDisplayController() {
         function addShipHeadStyle(shipClass) {
             document.querySelector(`.${shipClass}.ship-head`).classList.add('ship-head-hover')
         }
-        switch (true) {
-            case list.contains('carrier'): 
-                addShipHeadStyle('carrier'); break;
+        findShipFromClassListAndPerformAction(list, addShipHeadStyle)
+        // switch (true) {
+        //     case list.contains('carrier'): 
+        //         addShipHeadStyle('carrier'); break;
 
-            case list.contains('battleship'): 
-                addShipHeadStyle('battleship'); break;
+        //     case list.contains('battleship'): 
+        //         addShipHeadStyle('battleship'); break;
 
-            case list.contains('cruiser'): 
-                addShipHeadStyle('cruiser'); break;
+        //     case list.contains('cruiser'): 
+        //         addShipHeadStyle('cruiser'); break;
 
-            case list.contains('submarine'): 
-                addShipHeadStyle('submarine'); break;
+        //     case list.contains('submarine'): 
+        //         addShipHeadStyle('submarine'); break;
 
-            case list.contains('destroyer'): 
-                addShipHeadStyle('destroyer'); break;
-        }
+        //     case list.contains('destroyer'): 
+        //         addShipHeadStyle('destroyer'); break;
+        // }
     }
     
     // when hovering, need to get reference to 
@@ -220,30 +220,32 @@ function makeDisplayController() {
             function setCorrespondingShipFromGrid(clickTarget) {
                 let list = clickTarget.classList
                 // if contains a ship, then 
-                switch (true) {
-                    case list.contains('carrier'):
-                        setCurrentShip('carrier')
-                        break;
+                findShipFromClassListAndPerformAction(list, setCurrentShip)
+                // switch (true) {
+                //     case list.contains('carrier'):
+                //         setCurrentShip('carrier')
+                //         break;
 
-                    case list.contains('battleship'):
-                        setCurrentShip('battleship')
-                        break;
+                //     case list.contains('battleship'):
+                //         setCurrentShip('battleship')
+                //         break;
 
-                    case list.contains('cruiser'):
-                        setCurrentShip('cruiser')
-                        break;
+                //     case list.contains('cruiser'):
+                //         setCurrentShip('cruiser')
+                //         break;
 
-                    case list.contains('battleship'):
-                        setCurrentShip('battleship')
-                        break;
+                //     case list.contains('battleship'):
+                //         setCurrentShip('battleship')
+                //         break;
 
-                    case list.contains('destroyer'):
-                        setCurrentShip('destroyer')
-                        break;
-                }
+                //     case list.contains('destroyer'):
+                //         setCurrentShip('destroyer')
+                //         break;
+                // }
             }
 
             setCorrespondingShipFromGrid(e.target)
+            console.log(currentShip)
             // add the rotate decoration
 
             // get the ship that was clicked
@@ -299,7 +301,6 @@ function makeDisplayController() {
     }
 
     // remove the corresponding ship from the board, when clicking on it.
-    // i think the error is here. but i didn't have this problem before i thought
     function removeCorrespondingShipFromGridForAllShips(shipToReplace) {
         function removeShipFromGrid(shipClass) {
             const grid = document.querySelector('.initial-grid')
@@ -310,23 +311,23 @@ function makeDisplayController() {
         }
 
         let classList = shipToReplace.classList;
-        // findShipFromClassListAndPerformAction(classList, removeShipFromGrid);
-        switch (true) {
-            case classList.contains('carrier'):
-                removeShipFromGrid('carrier'); break;
+        findShipFromClassListAndPerformAction(classList, removeShipFromGrid);
+        // switch (true) {
+        //     case classList.contains('carrier'):
+        //         removeShipFromGrid('carrier'); break;
 
-            case classList.contains('battleship'):
-                removeShipFromGrid('battleship'); break;
+        //     case classList.contains('battleship'):
+        //         removeShipFromGrid('battleship'); break;
 
-            case classList.contains('cruiser'):
-                removeShipFromGrid('cruiser'); break;
+        //     case classList.contains('cruiser'):
+        //         removeShipFromGrid('cruiser'); break;
 
-            case classList.contains('submarine'):
-                removeShipFromGrid('submarine'); break;
+        //     case classList.contains('submarine'):
+        //         removeShipFromGrid('submarine'); break;
 
-            case classList.contains('destroyer'):
-                removeShipFromGrid('destroyer'); break;
-        }
+        //     case classList.contains('destroyer'):
+        //         removeShipFromGrid('destroyer'); break;
+        // }
     }
 
     // click on ship which is off the board, for placing on board
