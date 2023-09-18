@@ -3,12 +3,18 @@ import { Gameboard } from "./gameboard";
 
 function makeDisplayController() {
 
+    let ships = {
+        'carrier': 5,
+        'battleship': 4,
+        'cruiser': 3,
+        'pursuer': 3,
+        'destroyer': 2,
+    }
     let bodyElement = document.querySelector('body')
 
     function populateElementInfo(divType,  text=null, parent=null, ...classes) {
         const newElement = document.createElement(divType);
         classes.forEach((className) => newElement.classList.add(className));
-        // maybe spaces need another class to determine if they should be clicked or not
         if (text) newElement.textContent = text;
         if (parent) parent.appendChild(newElement)
         return newElement;
@@ -50,31 +56,28 @@ function makeDisplayController() {
         }
         switch (true) {
             case list.contains('carrier'): 
-                addShipHeadStyle('carrier'); break
+                addShipHeadStyle('carrier'); break;
 
             case list.contains('battleship'): 
-                addShipHeadStyle('battleship'); break
+                addShipHeadStyle('battleship'); break;
 
             case list.contains('cruiser'): 
-                addShipHeadStyle('cruiser'); break
+                addShipHeadStyle('cruiser'); break;
 
             case list.contains('submarine'): 
-                addShipHeadStyle('submarine'); break
+                addShipHeadStyle('submarine'); break;
 
             case list.contains('destroyer'): 
-                addShipHeadStyle('destroyer'); break
-
+                addShipHeadStyle('destroyer'); break;
         }
-
     }
     
     // when hovering, need to get reference to 
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('pregame-space')) {
             removeAllHovered();
-            if (document.querySelector('.selected-ship')) extendHover(e.target);
+            if (document.querySelector('.selected-ship-off-grid')) extendHover(e.target);
             addShipHeadStyleForAllShips(e.target)
-
         }
     })
 
@@ -84,12 +87,12 @@ function makeDisplayController() {
     })
 
     function removeClassFromPreviouslySelected() {
-        let previousSelectedShip = document.querySelector('.selected-ship')
-        if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship')
+        let previousSelectedShip = document.querySelector('.selected-ship-off-grid')
+        if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship-off-grid')
     }
 
     function extendHover(clickTarget) {
-        let selectedShip = document.querySelector('.selected-ship')
+        let selectedShip = document.querySelector('.selected-ship-off-grid')
 
         function markValidHover(col, row) {
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
@@ -97,20 +100,17 @@ function makeDisplayController() {
         }
 
         function markInvalidHover(col, row) {
-            console.log(col, row)
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
             space.classList.add('invalid-hovering')
         }
         
         function determineOtherHoverElements(clickTarget, dataLength) {
             let invalidPlacement = false;
-            // let head = document.querySelector('.valid-hovering')
             const headRow = parseInt(clickTarget.dataset.row)
             const headCol = parseInt(clickTarget.dataset.col)
+            let shipLength = parseInt(dataLength);
 
             // get the next few, using array logic
-            let shipLength = parseInt(dataLength);
-            
             for (let i = headCol; i < headCol + shipLength; i++) {
                 if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
                     invalidPlacement = true;
@@ -122,9 +122,9 @@ function makeDisplayController() {
             if (!invalidPlacement) {
                 for (let i = headCol; i < headCol + shipLength; i++) markValidHover(i, headRow)
             }
-            // the actual error is here
             else if (invalidPlacement) {
-                for (let i = headCol; i < 10; i++) markInvalidHover(i, headRow)
+                // for (let i = headCol; i < 10 || i < headCol + shipLength; i++) markInvalidHover(i, headRow)
+                for (let i = headCol; i < headCol + shipLength; i++) markInvalidHover(i, headRow)
             }
         }
 
@@ -132,42 +132,34 @@ function makeDisplayController() {
     }
 
     function greyOutSelectedShip() {
-        document.querySelector('.selected-ship').classList.add('grey-out')
+        document.querySelector('.selected-ship-off-grid').classList.add('grey-out')
     }
 
     function addShipClassToSpace(space) {
-        let selectedShip = document.querySelector('.selected-ship')
+        let selectedShip = document.querySelector('.selected-ship-off-grid')
         let classList = selectedShip.classList
         space.classList.add('ship-in-space')
         switch (true) {
             case classList.contains('carrier'):
-                space.classList.add('carrier');
-                break;
+                space.classList.add('carrier'); break;
 
             case classList.contains('battleship'):
-                space.classList.add('battleship');
-                break;
+                space.classList.add('battleship'); break;
 
             case classList.contains('cruiser'):
-                space.classList.add('cruiser');
-                break;
+                space.classList.add('cruiser'); break;
 
             case classList.contains('submarine'):
-                space.classList.add('submarine');
-                break;
+                space.classList.add('submarine'); break;
 
             case classList.contains('destroyer'):
-                space.classList.add('destroyer');
-                break;
+                space.classList.add('destroyer'); break;
 
         }
     }
 
     function addShipHead(clickTarget) {
-        console.log(clickTarget)
-        console.log(clickTarget.classList)
         clickTarget.classList.add('ship-head')
-        console.log(clickTarget.classList)
     }
 
     // clicking on spaces on grid
@@ -179,7 +171,15 @@ function makeDisplayController() {
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
             console.log('clicked ship head')
+
+            function getCorrespondingShipFromGrid(clickTarget) {
+                let list = clickTarget.classList
+                // if contains a ship, then 
+
+            }
             // add the rotate decoration
+
+            // get the ship that was clicked
 
             // move it again, show hover
             // may need to use extendHover. 
@@ -194,42 +194,32 @@ function makeDisplayController() {
 
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
-        if (document.querySelector('.selected-ship') === null) return
+        if (document.querySelector('.selected-ship-off-grid') === null) return
         if (e.target.classList.contains('pregame-space')) {
         
             if (checkInvalidPlacement(e.target)) return
 
             let allHovered = document.querySelectorAll('.valid-hovering')
             allHovered.forEach(space => addShipClassToSpace(space))
-            // maybe also put placed-ship-head where the click is. so that i can make it change color if hovered over
             greyOutSelectedShip();
             removeClassFromPreviouslySelected();
             removeAllHovered();
             addShipHead(e.target);
         }
     })
-
-
-    // color for invalid placement
-    // if out of bounds, or if there's already a ship
-    // maybe requires row and col, and length
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
-
     function checkIfAlreadyPlaced(col, row) {
-        console.log(document.querySelector(`[data-col="${col}"][data-row="${row}"]`))
         return document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList.contains('ship-in-space')
     }
 
     function checkInvalidPlacement(clickTarget) {
         let cannotPlaceShip = false;
-        const selectedShip = document.querySelector('.selected-ship')
+        const selectedShip = document.querySelector('.selected-ship-off-grid')
         const length = parseInt(selectedShip.dataset.length)
         const headRow = parseInt(clickTarget.dataset.row)
         const headCol = parseInt(clickTarget.dataset.col)
 
         // maybe requires vertical and horizontal
-
-
         // if horizontal
         // means row is the same, and columns change
         for (let i = headCol; i < headCol + length; i++) {
@@ -239,43 +229,32 @@ function makeDisplayController() {
         return cannotPlaceShip;
     }
 
-    // clicking on ships
-    // if clicking on already placed ship, then remove it
-    // if contains destoryer, then remove destroyer
-
+    // remove the corresponding ship from the board, when clicking on it.
     function removeCorrespondingShipFromGridForAllShips(shipToReplace) {
-        let classList =shipToReplace.classList
-        // if class list contains any of the ships, then 
         function removeShipFromGrid(shipClass) {
             document.querySelectorAll(`.${shipClass}`).forEach(space => {
                 space.classList.remove(shipClass)
                 space.classList.remove('ship-in-space')
             })
         }
+
+        let classList = shipToReplace.classList;
         switch (true) {
             case classList.contains('carrier'):
-                removeShipFromGrid('carrier')
-                break;
+                removeShipFromGrid('carrier'); break;
 
             case classList.contains('battleship'):
-                removeShipFromGrid('battleship')
-                break;
+                removeShipFromGrid('battleship'); break;
 
             case classList.contains('cruiser'):
-                removeShipFromGrid('cruiser')
-                break;
+                removeShipFromGrid('cruiser'); break;
 
             case classList.contains('submarine'):
-                removeShipFromGrid('submarine')
-                break;
+                removeShipFromGrid('submarine'); break;
 
             case classList.contains('destroyer'):
-                removeShipFromGrid('destroyer')
-                break;
-
+                removeShipFromGrid('destroyer'); break;
         }
-        // remove the corresponding ship on the board
-
     }
 
     // click on ship for placing on board
@@ -284,16 +263,9 @@ function makeDisplayController() {
             if (e.target.classList.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
             removeClassFromPreviouslySelected();
             removeAllHovered();
-            (e.target.classList.add('selected-ship'))
-
-            
+            (e.target.classList.add('selected-ship-off-grid'))
         }
     })
-
-    // function to change the look of the ship when clicked
-    // function to reset the look of the previously clicked ship
-
-    // function to hover on the grid when the mouse is over it
 
     function determineText(space) {
         if (!space.hasShip && !space.wasGuessed) return '.'
