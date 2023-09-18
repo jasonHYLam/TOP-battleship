@@ -97,10 +97,6 @@ body {
 
 
 
-.hovering {
-    background-color: aqua;
-}
-
 .selected-ship {
     background-color: beige;
     border: white solid 2px;
@@ -113,4 +109,12 @@ body {
 
 .grey-out {
     background-color: darkslategrey;
+}
+
+.valid-hovering {
+    background-color: aqua;
+}
+
+.invalid-hovering {
+    background-color: coral;
 }
