@@ -1,11 +1,9 @@
-
 import { makeGameController } from "./gameController";
 import { Gameboard } from "./gameboard";
 
 function makeDisplayController() {
 
     let bodyElement = document.querySelector('body')
-
 
     function populateElementInfo(divType,  text=null, parent=null, ...classes) {
         const newElement = document.createElement(divType);
@@ -18,10 +16,8 @@ function makeDisplayController() {
 
     // pregame display code
 
-    // would i have to use placeShip in this? 
     function createPreGameGrid() {
         let initialGrid = document.querySelector(".initial-grid")
-        console.log(initialGrid)
         for (let i = 0; i < 10; i++) {
             let rowElement = populateElementInfo('div', null, initialGrid, 'row')
             for (let j = 0; j < 10; j++) {
@@ -50,13 +46,7 @@ function makeDisplayController() {
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('pregame-space')) {
             removeAllHovered();
-            // will need to get rid of this, because i am introducing invalid placement for head
-            // e.target.classList.add('valid-hovering')
-
-            // maybe check if out of bounds as well
-            // need to introduce additional argument, for click target
             if (document.querySelector('.selected-ship')) extendHover(e.target);
-            
         }
     })
 
@@ -72,11 +62,6 @@ function makeDisplayController() {
 
     function extendHover(clickTarget) {
         let selectedShip = document.querySelector('.selected-ship')
-        let invalidPlacement = false;
-
-        // hmm this will decide whether all elements are valid, or INVALID
-        // will i need 3 for loops for this?
-        // the first to go through everything and determine if needs to declared invalid
 
         function markValidHover(col, row) {
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
@@ -84,31 +69,35 @@ function makeDisplayController() {
         }
 
         function markInvalidHover(col, row) {
+            console.log(col, row)
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
             space.classList.add('invalid-hovering')
         }
         
-        function determineOtherHoverElements(clickTarget, stringLength) {
+        function determineOtherHoverElements(clickTarget, dataLength) {
+            let invalidPlacement = false;
             // let head = document.querySelector('.valid-hovering')
-            // get reference to row and col
             const headRow = parseInt(clickTarget.dataset.row)
             const headCol = parseInt(clickTarget.dataset.col)
 
             // get the next few, using array logic
-            let shipLength = parseInt(stringLength);
+            let shipLength = parseInt(dataLength);
             
             // fix console log error here, and make red here too
             for (let i = headCol; i < headCol + shipLength; i++) {
-                if (i > 9) invalidPlacement = true;
-                if (checkIfAlreadyPlaced(i, headRow)) invalidPlacement = true;
+                if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
+                    invalidPlacement = true;
+                    break;
+                }
                 // for horizontal, would be same row, increase column
             }
 
             if (!invalidPlacement) {
                 for (let i = headCol; i < headCol + shipLength; i++) markValidHover(i, headRow)
             }
+            // the actual error is here
             else if (invalidPlacement) {
-                for (let i = headCol; i < headCol + shipLength; i++) markInvalidHover(i, headRow)
+                for (let i = headCol; i < 10; i++) markInvalidHover(i, headRow)
             }
         }
 
@@ -176,6 +165,7 @@ function makeDisplayController() {
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
 
     function checkIfAlreadyPlaced(col, row) {
+        console.log(document.querySelector(`[data-col="${col}"][data-row="${row}"]`))
         return document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList.contains('ship-in-space')
     }
 
@@ -195,7 +185,6 @@ function makeDisplayController() {
             if (i > 10) cannotPlaceShip = true;
             if (checkIfAlreadyPlaced(i, headRow)) cannotPlaceShip = true;
         }
-        console.log(`can i place ship? ${cannotPlaceShip}`)
         return cannotPlaceShip;
     }
 
