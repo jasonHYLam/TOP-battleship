@@ -3,13 +3,54 @@ import { Gameboard } from "./gameboard";
 
 function makeDisplayController() {
 
-    let ships = {
+    let shipLengths = {
         'carrier': 5,
         'battleship': 4,
         'cruiser': 3,
-        'pursuer': 3,
+        'submarine': 3,
         'destroyer': 2,
     }
+    let currentShip = null;
+
+    function getCurrentShip() {
+        return currentShip;
+    }
+
+    function setCurrentShip(ship) {
+        currentShip = ship
+    }
+
+    function setCurrentShipFromDOM(element) {
+        console.log(element)
+        let list = element.classList
+        switch (true) {
+            case list.contains('carrier'):
+                setCurrentShip('carrier'); break;
+
+            case list.contains('battleship'):
+                setCurrentShip('battleship'); break;
+
+            case list.contains('cruiser'):
+                setCurrentShip('cruiser'); break;
+
+            case list.contains('submarine'):
+                setCurrentShip('submarine'); break;
+
+            case list.contains('destroyer'):
+                setCurrentShip('destroyer'); break;
+        }
+    }
+
+
+    function resetCurrentShip() {
+        currentShip = null
+    }
+
+    function getCurrentShipLength() {
+        console.log(shipLengths[currentShip]);
+        return shipLengths[currentShip];
+    }
+
     let bodyElement = document.querySelector('body')
 
     function populateElementInfo(divType,  text=null, parent=null, ...classes) {
@@ -76,7 +117,7 @@ function makeDisplayController() {
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('pregame-space')) {
             removeAllHovered();
-            if (document.querySelector('.selected-ship-off-grid')) extendHover(e.target);
+            if (currentShip) extendHover(e.target)
             addShipHeadStyleForAllShips(e.target)
         }
     })
@@ -86,13 +127,13 @@ function makeDisplayController() {
         removeAllHovered();
     })
 
+    // dont change this
     function removeClassFromPreviouslySelected() {
         let previousSelectedShip = document.querySelector('.selected-ship-off-grid')
         if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship-off-grid')
     }
 
     function extendHover(clickTarget) {
-        let selectedShip = document.querySelector('.selected-ship-off-grid')
 
         function markValidHover(col, row) {
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
@@ -123,39 +164,22 @@ function makeDisplayController() {
                 for (let i = headCol; i < headCol + shipLength; i++) markValidHover(i, headRow)
             }
             else if (invalidPlacement) {
-                // for (let i = headCol; i < 10 || i < headCol + shipLength; i++) markInvalidHover(i, headRow)
+                // for (let i = headCol; (i < 10) || (i < headCol + shipLength); i++) markInvalidHover(i, headRow)
                 for (let i = headCol; i < headCol + shipLength; i++) markInvalidHover(i, headRow)
             }
         }
 
-        determineOtherHoverElements(clickTarget, selectedShip.dataset.length)
+        determineOtherHoverElements(clickTarget, getCurrentShipLength())
     }
 
     function greyOutSelectedShip() {
+        // dont need to change this
         document.querySelector('.selected-ship-off-grid').classList.add('grey-out')
     }
 
     function addShipClassToSpace(space) {
-        let selectedShip = document.querySelector('.selected-ship-off-grid')
-        let classList = selectedShip.classList
         space.classList.add('ship-in-space')
-        switch (true) {
-            case classList.contains('carrier'):
-                space.classList.add('carrier'); break;
-
-            case classList.contains('battleship'):
-                space.classList.add('battleship'); break;
-
-            case classList.contains('cruiser'):
-                space.classList.add('cruiser'); break;
-
-            case classList.contains('submarine'):
-                space.classList.add('submarine'); break;
-
-            case classList.contains('destroyer'):
-                space.classList.add('destroyer'); break;
-
-        }
+        space.classList.add(getCurrentShip())
     }
 
     function addShipHead(clickTarget) {
@@ -194,17 +218,18 @@ function makeDisplayController() {
 
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
-        if (document.querySelector('.selected-ship-off-grid') === null) return
+        // change this
+        if (!currentShip) return
         if (e.target.classList.contains('pregame-space')) {
         
             if (checkInvalidPlacement(e.target)) return
-
             let allHovered = document.querySelectorAll('.valid-hovering')
             allHovered.forEach(space => addShipClassToSpace(space))
             greyOutSelectedShip();
             removeClassFromPreviouslySelected();
             removeAllHovered();
             addShipHead(e.target);
+            resetCurrentShip();
         }
     })
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
@@ -214,8 +239,8 @@ function makeDisplayController() {
 
     function checkInvalidPlacement(clickTarget) {
         let cannotPlaceShip = false;
-        const selectedShip = document.querySelector('.selected-ship-off-grid')
-        const length = parseInt(selectedShip.dataset.length)
+
+        const length = getCurrentShipLength();
         const headRow = parseInt(clickTarget.dataset.row)
         const headCol = parseInt(clickTarget.dataset.col)
 
@@ -257,13 +282,14 @@ function makeDisplayController() {
         }
     }
 
-    // click on ship for placing on board
+    // click on ship which is off the board, for placing on board
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship')) {
             if (e.target.classList.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
             removeClassFromPreviouslySelected();
             removeAllHovered();
             (e.target.classList.add('selected-ship-off-grid'))
+            setCurrentShipFromDOM(e.target)
         }
     })
 
