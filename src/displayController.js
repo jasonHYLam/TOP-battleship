@@ -180,11 +180,7 @@ function makeDisplayController() {
     }
 
     function removeShipHead() {
-        // get the head of the current ship, or the ship that is clicked
-        console.log(
-            document.querySelector(`.ship-head.${getCurrentShip()}`)
-        )
-            document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
+        document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
     }
 
     // clicking on spaces on grid
@@ -204,6 +200,11 @@ function makeDisplayController() {
     }
 
     // will need a removeDecoration function 
+    function removeSelectedShipDecoration() {
+        document.querySelectorAll(`.selected-ship-on-grid`).forEach(space => {
+            space.classList.remove('selected-ship-on-grid')
+        })
+    }
 
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
@@ -217,7 +218,7 @@ function makeDisplayController() {
 
             setCorrespondingShipFromGrid(e.target)
             // need to decorate ship... darken to indicate it is clicked
-            // decorateSelectedShip(e.target)
+            decorateSelectedShip(e.target)
             // also need to remove decoration... when successful replacement, or maybe unsuccessful?
 
 
@@ -254,10 +255,10 @@ function makeDisplayController() {
             //move existing ship
             if (checkIfMovingShip()) {
                 removeShipHead();
+                // also need to remove movingShip decoration... 
+                removeSelectedShipDecoration();
                 removeCurrentShipFromGrid();
-                // also need to remove the ship head...
                 setMovingShipToFalse();
-                // also need to remove decoration... 
             }
             //place ship for the first time
             else {
