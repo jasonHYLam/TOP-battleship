@@ -3,6 +3,12 @@ import { Gameboard } from "./gameboard";
 
 function makeDisplayController() {
 
+    let currentShip = null;
+    let movingShip = false;
+    function setMovingShipToTrue() {movingShip = true}
+    function setMovingShipToFalse() {movingShip = false}
+    function checkIfMovingShip() {return movingShip}
+
     function findShipFromClassListAndPerformAction(list, action) {
         switch (true) {
             case list.contains('carrier'):
@@ -29,7 +35,6 @@ function makeDisplayController() {
         'submarine': 3,
         'destroyer': 2,
     }
-    let currentShip = null;
 
     function getCurrentShip() {
         return currentShip;
@@ -40,25 +45,8 @@ function makeDisplayController() {
     }
 
     function setCurrentShipFromDOM(element) {
-        console.log(element)
         let list = element.classList
         findShipFromClassListAndPerformAction(list, setCurrentShip)
-        // switch (true) {
-        //     case list.contains('carrier'):
-        //         setCurrentShip('carrier'); break;
-
-        //     case list.contains('battleship'):
-        //         setCurrentShip('battleship'); break;
-
-        //     case list.contains('cruiser'):
-        //         setCurrentShip('cruiser'); break;
-
-        //     case list.contains('submarine'):
-        //         setCurrentShip('submarine'); break;
-
-        //     case list.contains('destroyer'):
-        //         setCurrentShip('destroyer'); break;
-        // }
     }
 
 
@@ -115,22 +103,6 @@ function makeDisplayController() {
             document.querySelector(`.${shipClass}.ship-head`).classList.add('ship-head-hover')
         }
         findShipFromClassListAndPerformAction(list, addShipHeadStyle)
-        // switch (true) {
-        //     case list.contains('carrier'): 
-        //         addShipHeadStyle('carrier'); break;
-
-        //     case list.contains('battleship'): 
-        //         addShipHeadStyle('battleship'); break;
-
-        //     case list.contains('cruiser'): 
-        //         addShipHeadStyle('cruiser'); break;
-
-        //     case list.contains('submarine'): 
-        //         addShipHeadStyle('submarine'); break;
-
-        //     case list.contains('destroyer'): 
-        //         addShipHeadStyle('destroyer'); break;
-        // }
     }
     
     // when hovering, need to get reference to 
@@ -217,31 +189,10 @@ function makeDisplayController() {
         if (e.target.classList.contains('ship-head')) {
             console.log('clicked ship head')
 
+            setMovingShipToTrue()
+            // this sets currentShip, when clicking on the ship head
             function setCorrespondingShipFromGrid(clickTarget) {
-                let list = clickTarget.classList
-                // if contains a ship, then 
-                findShipFromClassListAndPerformAction(list, setCurrentShip)
-                // switch (true) {
-                //     case list.contains('carrier'):
-                //         setCurrentShip('carrier')
-                //         break;
-
-                //     case list.contains('battleship'):
-                //         setCurrentShip('battleship')
-                //         break;
-
-                //     case list.contains('cruiser'):
-                //         setCurrentShip('cruiser')
-                //         break;
-
-                //     case list.contains('battleship'):
-                //         setCurrentShip('battleship')
-                //         break;
-
-                //     case list.contains('destroyer'):
-                //         setCurrentShip('destroyer')
-                //         break;
-                // }
+                setCurrentShipFromDOM(clickTarget)
             }
 
             setCorrespondingShipFromGrid(e.target)
@@ -255,24 +206,40 @@ function makeDisplayController() {
             extendHover(e.target)
             // how do i place the ship, and remove the ship?
 
+            // well, i think i need to introduce another thing in the click event on the board. 
+            // remove currentShip instance on the board if it exists.
+            // might need if statement on the first placement of it... 
+
 
             // try to rotate
+            // might need another variable called rotate
+            // determine if rotateMode is on; if it is, then clicking on ship head will make it rotate, if possible
 
         }
     })
 
     // clicking on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
+        console.log(`movingShip: ${checkIfMovingShip()}`)
         // don't allow click if ship is not selected
-        // change this
         if (!currentShip) return
         if (e.target.classList.contains('pregame-space')) {
         
             if (checkInvalidPlacement(e.target)) return
+            
+            //move existing ship
+            if (checkIfMovingShip()) {
+                removeCurrentShipFromGrid();
+                setMovingShipToFalse();
+            }
+            //place ship for the first time
+            else {
+                greyOutSelectedShip();
+                removeClassFromPreviouslySelected();
+            }
+
             let allHovered = document.querySelectorAll('.valid-hovering')
             allHovered.forEach(space => addShipClassToSpace(space))
-            greyOutSelectedShip();
-            removeClassFromPreviouslySelected();
             removeAllHovered();
             addShipHead(e.target);
             resetCurrentShip();
@@ -300,47 +267,33 @@ function makeDisplayController() {
         return cannotPlaceShip;
     }
 
+    function removeShipFromGrid(shipName) {
+        const grid = document.querySelector('.initial-grid')
+        grid.querySelectorAll(`.${shipName}`).forEach(space => {
+            space.classList.remove(shipName)
+            space.classList.remove('ship-in-space')
+        })
+    }
+
+    function removeCurrentShipFromGrid() {
+        removeShipFromGrid(getCurrentShip())
+    }
+
     // remove the corresponding ship from the board, when clicking on it.
     function removeCorrespondingShipFromGridForAllShips(shipToReplace) {
-        function removeShipFromGrid(shipClass) {
-            const grid = document.querySelector('.initial-grid')
-            grid.querySelectorAll(`.${shipClass}`).forEach(space => {
-                space.classList.remove(shipClass)
-                space.classList.remove('ship-in-space')
-            })
-        }
-
         let classList = shipToReplace.classList;
         findShipFromClassListAndPerformAction(classList, removeShipFromGrid);
-        // switch (true) {
-        //     case classList.contains('carrier'):
-        //         removeShipFromGrid('carrier'); break;
-
-        //     case classList.contains('battleship'):
-        //         removeShipFromGrid('battleship'); break;
-
-        //     case classList.contains('cruiser'):
-        //         removeShipFromGrid('cruiser'); break;
-
-        //     case classList.contains('submarine'):
-        //         removeShipFromGrid('submarine'); break;
-
-        //     case classList.contains('destroyer'):
-        //         removeShipFromGrid('destroyer'); break;
-        // }
     }
 
     // click on ship which is off the board, for placing on board
     bodyElement.addEventListener('click', (e) => {
-        if (e.target.classList.contains('ship')) {
-            if (e.target.classList.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
+        let list = e.target.classList
+        if (list.contains('ship')) {
+            if (list.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
             removeClassFromPreviouslySelected();
             removeAllHovered();
-            (e.target.classList.add('selected-ship-off-grid'))
-            console.log(currentShip)
+            (list.add('selected-ship-off-grid'))
             setCurrentShipFromDOM(e.target)
-            // ah what have i done
-            console.log(currentShip)
         }
     })
 
