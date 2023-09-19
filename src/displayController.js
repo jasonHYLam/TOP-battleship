@@ -179,11 +179,31 @@ function makeDisplayController() {
         clickTarget.classList.add('ship-head')
     }
 
+    function removeShipHead() {
+        // get the head of the current ship, or the ship that is clicked
+        console.log(
+            document.querySelector(`.ship-head.${getCurrentShip()}`)
+        )
+            document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
+    }
+
     // clicking on spaces on grid
 
     // i need to not add stuff when there's a element too close... do i need to use row and column?
     //maybe
     // check if can place..
+
+    function decorateSelectedShip(clickTarget) {
+        function decorate(shipName) {
+            const grid = document.querySelector('.initial-grid')
+            grid.querySelectorAll(`.${shipName}`).forEach(space => {
+                space.classList.add('selected-ship-on-grid')
+            })
+        }
+        findShipFromClassListAndPerformAction(clickTarget.classList, decorate)
+    }
+
+    // will need a removeDecoration function 
 
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
@@ -196,6 +216,11 @@ function makeDisplayController() {
             }
 
             setCorrespondingShipFromGrid(e.target)
+            // need to decorate ship... darken to indicate it is clicked
+            // decorateSelectedShip(e.target)
+            // also need to remove decoration... when successful replacement, or maybe unsuccessful?
+
+
             console.log(currentShip)
             // add the rotate decoration
 
@@ -220,7 +245,6 @@ function makeDisplayController() {
 
     // clicking on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
-        console.log(`movingShip: ${checkIfMovingShip()}`)
         // don't allow click if ship is not selected
         if (!currentShip) return
         if (e.target.classList.contains('pregame-space')) {
@@ -229,8 +253,11 @@ function makeDisplayController() {
             
             //move existing ship
             if (checkIfMovingShip()) {
+                removeShipHead();
                 removeCurrentShipFromGrid();
+                // also need to remove the ship head...
                 setMovingShipToFalse();
+                // also need to remove decoration... 
             }
             //place ship for the first time
             else {

@@ -103,6 +103,7 @@ body {
     box-sizing: border-box;
 }
 
+
 .ship-in-space {
     background-color: white;
 }
@@ -123,3 +124,8 @@ body {
     background-color: goldenrod;
 }
 
+
+.selected-ship-on-grid {
+    background-color: darkgrey;
+    
+}
