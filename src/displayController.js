@@ -136,7 +136,9 @@ function makeDisplayController() {
     // hovering over the ship head to show rotated hover
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('ship-head')) {
+            console.log(currentlyRotating)
             if (currentlyRotating) {
+                console.log('should show rotated hover')
                 showRotatedHover(e.target)
             }
         }
@@ -170,6 +172,9 @@ function makeDisplayController() {
             const headCol = parseInt(clickTarget.dataset.col)
             let shipLength = parseInt(dataLength);
 
+
+            console.log(shipLength)
+
             // this is horizontal
             // get the next few, using array logic
             for (let i = headCol; i < headCol + shipLength; i++) {
@@ -192,6 +197,8 @@ function makeDisplayController() {
             //this, THIS is vertical
         }
 
+        console.log('next should show current ship length')
+        console.log(getCurrentShipLength())
         determineOtherHoverElements(clickTarget, getCurrentShipLength())
     }
 
@@ -206,6 +213,7 @@ function makeDisplayController() {
                 invalidPlacement = true;
             }
         }
+        console.log(invalidPlacement)
         if (invalidPlacement) {
 
             for (let i = headRow; i < headRow + length; i++) {
@@ -214,6 +222,7 @@ function makeDisplayController() {
             }
         }
         if (!invalidPlacement) {
+            console.log('should work?')
             for (let i = headRow; i < headRow + length; i++) {markValidHover(headCol, i)}
         }
     }
@@ -267,6 +276,7 @@ function makeDisplayController() {
     // clicking ship head to move or rotate
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
+            console.log('did this happen... when clicking to make ship disappear')
 
             // this sets currentShip, when clicking on the ship head
             function setCorrespondingShipFromGrid(clickTarget) {
@@ -291,13 +301,21 @@ function makeDisplayController() {
             }
 
 
-            if (currentlyRotating) {
-                // this is where i need to remove current ship 
-                convertValidHoverIntoShip();
+            else if (currentlyRotating) {
                 // check if invalid or out of bounds
+                // this checks the opposite orientation
+                // need to check vertical, not horizontal
+                if (checkInvalidPlacement(e.target)) return;
+
                 // and use placeShip which just converts hover into ship pieces
+                removeCurrentShipFromGrid();
+                convertValidHoverIntoShip();
+                // this is where i need to remove current ship 
+
                 // use toggleCurrentShipRotation
                 // and maybe resetCurrentShip
+                removeAllHovered();
+                resetCurrentShip();
             }
         }
     })
@@ -308,26 +326,32 @@ function makeDisplayController() {
         allHovered.forEach(space => addShipClassToSpace(space))
     }
 
-    // clicking on the grid to place a ship
+    // click on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
         if (!currentShip) return
         if (e.target.classList.contains('pregame-space')) {
-        
+
             if (checkInvalidPlacement(e.target)) return
-            
             //move existing ship
             if (checkIfMovingShip()) {
-                removeShipHead();
-                removeRotateIcon()
-                // also need to remove movingShip decoration... 
-                removeSelectedShipDecoration();
-                removeCurrentShipFromGrid();
-                setMovingShipToFalse();
-                disableCurrentlyRotating();
+            // prevents moving ship, if the ship is in rotate mode
+            console.log(currentlyRotating) // this is true
+            // if not rotating the ship, then do this
+                if (!currentlyRotating) {
+                    removeShipHead();
+                    removeRotateIcon()
+                    // also need to remove movingShip decoration... 
+                    removeSelectedShipDecoration();
+                    removeCurrentShipFromGrid();
+                    setMovingShipToFalse();
+                    disableCurrentlyRotating();
+                }
+            
             }
             //place ship for the first time
             else {
+                console.log(currentlyRotating)
                 greyOutSelectedShip();
                 removeClassFromPreviouslySelected();
             }
@@ -353,22 +377,26 @@ function makeDisplayController() {
         const headRow = parseInt(clickTarget.dataset.row)
         const headCol = parseInt(clickTarget.dataset.col)
 
-        if (getCurrentShipOrientation() === 'horizontal') {
+        console.log(getCurrentShipOrientation());
+        // requires checking if currently rotating; if so, check the opposite orientation
+        if (getCurrentShipOrientation() === 'horizontal' && !currentlyRotating
+                || getCurrentShipOrientation() === 'vertical' && currentlyRotating) {
             // means row is the same, and columns change
-            for (let i = headCol; i < headCol + length; i++) {
+            for (let i = headCol + 1; i < headCol + length; i++) {
                 if (i > 10) cannotPlaceShip = true;
                 if (checkIfAlreadyPlaced(i, headRow)) cannotPlaceShip = true;
             }
         }
 
-        else if (getCurrentShipOrientation() === 'vertical') {
+        else if (getCurrentShipOrientation() === 'vertical' && !currentlyRotating
+                || getCurrentShipOrientation() === 'horizontal' && currentlyRotating) {
             // means column is the same, and rows change
-            for (let i = headRow; i < headRow+ length; i++) {
+            for (let i = headRow + 1; i < headRow + length; i++) {
                 if (i > 10) cannotPlaceShip = true;
                 if (checkIfAlreadyPlaced(headCol, i)) cannotPlaceShip = true;
             }
-
         }
+        console.log(cannotPlaceShip)
         return cannotPlaceShip;
     }
 
