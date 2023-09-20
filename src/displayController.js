@@ -5,6 +5,9 @@ function makeDisplayController() {
 
     let currentShip = null;
     let movingShip = false;
+    let allowVertical = false;
+    function setVerticalMode() {allowVertical = true}
+    function disableVerticalMode() {allowVertical = false}
     function setMovingShipToTrue() {movingShip = true}
     function setMovingShipToFalse() {movingShip = false}
     function checkIfMovingShip() {return movingShip}
@@ -100,7 +103,11 @@ function makeDisplayController() {
     function addShipHeadStyleForAllShips(clickTarget) {
         let list = clickTarget.classList
         function addShipHeadStyle(shipClass) {
-            document.querySelector(`.${shipClass}.ship-head`).classList.add('ship-head-hover')
+            const shipHead = document.querySelector(`.${shipClass}.ship-head`);
+            
+            shipHead.classList.add('ship-head-hover')
+            console.log(shipHead)
+
         }
         findShipFromClassListAndPerformAction(list, addShipHeadStyle)
     }
@@ -109,10 +116,22 @@ function makeDisplayController() {
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('pregame-space')) {
             removeAllHovered();
-            if (currentShip) extendHover(e.target)
+            // disableVerticalMode();
+            if (currentShip) extendHorizontalHover(e.target)
             addShipHeadStyleForAllShips(e.target)
         }
     })
+
+    bodyElement.addEventListener('mouseover', (e) => {
+        if (e.target.classList.contains('ship-head')) {
+            if (allowVertical) {
+                console.log('things are going well')
+                showRotatedHover(e.target)
+            }
+        }
+    })
+
+    
 
     // when the mouse leaves the grid, hide the hovered spaces
     document.querySelector('.initial-grid').addEventListener('mouseleave', () => {
@@ -126,8 +145,6 @@ function makeDisplayController() {
         if (previousSelectedShip) previousSelectedShip.classList.remove('selected-ship-off-grid')
     }
 
-    function extendHover(clickTarget) {
-
         function markValidHover(col, row) {
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
             space.classList.add('valid-hovering')
@@ -137,6 +154,9 @@ function makeDisplayController() {
             let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
             space.classList.add('invalid-hovering')
         }
+
+    function extendHorizontalHover(clickTarget) {
+
         
         function determineOtherHoverElements(clickTarget, dataLength) {
             let invalidPlacement = false;
@@ -144,6 +164,9 @@ function makeDisplayController() {
             const headCol = parseInt(clickTarget.dataset.col)
             let shipLength = parseInt(dataLength);
 
+            // this is horizontal
+
+            
             // get the next few, using array logic
             for (let i = headCol; i < headCol + shipLength; i++) {
                 if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
@@ -160,9 +183,28 @@ function makeDisplayController() {
                 // for (let i = headCol; (i < 10) || (i < headCol + shipLength); i++) markInvalidHover(i, headRow)
                 for (let i = headCol; i < headCol + shipLength; i++) markInvalidHover(i, headRow)
             }
+
+
+            //this, THIS is vertical
         }
 
         determineOtherHoverElements(clickTarget, getCurrentShipLength())
+    }
+
+    function showRotatedHover(clickTarget) {
+        const length = getCurrentShipLength()
+        let invalidPlacement = false;
+        const headCol = parseInt(clickTarget.dataset.col);
+        const headRow = parseInt(clickTarget.dataset.row);
+        // kinda simialr to determineOther HoverEleemnts, except increase row rather than column
+        for (let i = headRow + 1; i < headRow + length; i++) {
+            if (i > 9 || checkIfAlreadyPlaced(headCol, i)) {
+                invalidPlacement = true;
+            }
+        }
+        if (!invalidPlacement) {
+            for (let i = headRow; i < headRow + length; i++) markValidHover(headCol, i)
+        }
     }
 
     function greyOutSelectedShip() {
@@ -206,6 +248,11 @@ function makeDisplayController() {
         })
     }
 
+    function removeRotateIcon() {
+        let icon = document.querySelector('i')
+        icon.parentNode.removeChild(icon)
+    }
+
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
             console.log('clicked ship head')
@@ -219,17 +266,27 @@ function makeDisplayController() {
             setCorrespondingShipFromGrid(e.target)
             // need to decorate ship... darken to indicate it is clicked
             decorateSelectedShip(e.target)
-            // also need to remove decoration... when successful replacement, or maybe unsuccessful?
+
+            function showRotateIcon(clickTarget) {
+                if (clickTarget.querySelector('i')) clickTarget.removeChild(clickTarget.querySelector('i'))
+                const template = document.querySelector('#icon-template')
+                const clone =template.content.cloneNode(true)
+                console.log(clone.children[0])
+                clickTarget.appendChild(clone.children[0])
+            }
+            showRotateIcon(e.target);
 
 
             console.log(currentShip)
             // add the rotate decoration
+            setVerticalMode();
+            console.log(allowVertical)
 
             // get the ship that was clicked
 
             // move it again, show hover
             // may need to use extendHover. 
-            extendHover(e.target)
+            extendHorizontalHover(e.target)
             // how do i place the ship, and remove the ship?
 
             // well, i think i need to introduce another thing in the click event on the board. 
@@ -255,6 +312,7 @@ function makeDisplayController() {
             //move existing ship
             if (checkIfMovingShip()) {
                 removeShipHead();
+                removeRotateIcon()
                 // also need to remove movingShip decoration... 
                 removeSelectedShipDecoration();
                 removeCurrentShipFromGrid();
