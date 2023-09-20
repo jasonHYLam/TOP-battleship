@@ -181,7 +181,9 @@ function makeDisplayController() {
             }
             else if (invalidPlacement) {
                 // for (let i = headCol; (i < 10) || (i < headCol + shipLength); i++) markInvalidHover(i, headRow)
-                for (let i = headCol; i < headCol + shipLength; i++) markInvalidHover(i, headRow)
+                for (let i = headCol; i < headCol + shipLength; i++) {
+                    if (i > 9) break;
+                    markInvalidHover(i, headRow)}
             }
 
 
@@ -202,8 +204,15 @@ function makeDisplayController() {
                 invalidPlacement = true;
             }
         }
+        if (invalidPlacement) {
+
+            for (let i = headRow; i < headRow + length; i++) {
+                if (i > 9) break;
+                markInvalidHover(headCol, i)
+            }
+        }
         if (!invalidPlacement) {
-            for (let i = headRow; i < headRow + length; i++) markValidHover(headCol, i)
+            for (let i = headRow; i < headRow + length; i++) {markValidHover(headCol, i)}
         }
     }
 
@@ -253,9 +262,9 @@ function makeDisplayController() {
         icon.parentNode.removeChild(icon)
     }
 
+    // clicking ship head to move or rotate
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
-            console.log('clicked ship head')
 
             setMovingShipToTrue()
             // this sets currentShip, when clicking on the ship head
@@ -271,18 +280,11 @@ function makeDisplayController() {
                 if (clickTarget.querySelector('i')) clickTarget.removeChild(clickTarget.querySelector('i'))
                 const template = document.querySelector('#icon-template')
                 const clone =template.content.cloneNode(true)
-                console.log(clone.children[0])
                 clickTarget.appendChild(clone.children[0])
             }
-            showRotateIcon(e.target);
-
-
-            console.log(currentShip)
             // add the rotate decoration
             setVerticalMode();
-            console.log(allowVertical)
-
-            // get the ship that was clicked
+            showRotateIcon(e.target);
 
             // move it again, show hover
             // may need to use extendHover. 
@@ -292,12 +294,6 @@ function makeDisplayController() {
             // well, i think i need to introduce another thing in the click event on the board. 
             // remove currentShip instance on the board if it exists.
             // might need if statement on the first placement of it... 
-
-
-            // try to rotate
-            // might need another variable called rotate
-            // determine if rotateMode is on; if it is, then clicking on ship head will make it rotate, if possible
-
         }
     })
 
