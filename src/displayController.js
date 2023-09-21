@@ -478,6 +478,9 @@ function makeDisplayController() {
         const headRow = parseInt(clickTarget.dataset.row)
         const headCol = parseInt(clickTarget.dataset.col)
 
+        console.log(getCurrentShipOrientation())
+        console.log(currentlyRotating)
+
         // requires checking if currently rotating; if so, check the opposite orientation
         if (getCurrentShipOrientation() === 'horizontal'
          && !currentlyRotating
