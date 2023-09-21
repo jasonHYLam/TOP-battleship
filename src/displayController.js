@@ -465,6 +465,7 @@ function makeDisplayController() {
     })
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
     function checkIfAlreadyPlaced(col, row) {
+        // if (col > 9 || row > 9) return
         // something wrong here now
         return document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList.contains('ship-in-space')
     }
@@ -482,26 +483,35 @@ function makeDisplayController() {
         console.log(currentlyRotating)
 
         // requires checking if currently rotating; if so, check the opposite orientation
+        // this should be happening instead. so shouldnt be rotating then?
+        // if it is supposed to be rotating, then there should be another check
+        // also, why did i check both move and rotate?
         if (getCurrentShipOrientation() === 'horizontal'
          && !currentlyRotating
-                || getCurrentShipOrientation() === 'vertical' && currentlyRotating
+                || getCurrentShipOrientation() === 'vertical' && 
+                // currentlyRotating
+                checkIfClickShipHead(clickTarget)
                 ) {
             // means row is the same, and columns change
             for (let i = headCol + 1; i < headCol + length; i++) {
-                if (i > 10 || checkIfAlreadyPlaced(i, headRow)) {
+                if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
                     cannotPlaceShip = true;
                     break;
                 }
             }
         }
 
+        // moving the 
         else if ((getCurrentShipOrientation() === 'vertical' 
         && !currentlyRotating)
-                || (getCurrentShipOrientation() == 'horizontal' && getCurrentlyRotating())
+                || (getCurrentShipOrientation() == 'horizontal' && 
+                // getCurrentlyRotating()
+                checkIfClickShipHead(clickTarget)
+                )
                 ) {
             // means column is the same, and rows change
             for (let i = headRow + 1; i < headRow + length; i++) {
-                if (i > 10 || checkIfAlreadyPlaced(headCol, i)) {
+                if (i > 9 || checkIfAlreadyPlaced(headCol, i)) {
                     cannotPlaceShip = true;
                     break;
                 }
