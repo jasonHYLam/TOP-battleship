@@ -223,20 +223,42 @@ function makeDisplayController() {
         const headCol = parseInt(clickTarget.dataset.col);
         const headRow = parseInt(clickTarget.dataset.row);
         // kinda simialr to determineOther HoverEleemnts, except increase row rather than column
-        for (let i = headRow + 1; i < headRow + length; i++) {
-            if (i > 9 || checkIfAlreadyPlaced(headCol, i)) {
-                invalidPlacement = true;
+
+        if (getCurrentShipOrientation() === 'horizontal') {
+            for (let i = headRow + 1; i < headRow + length; i++) {
+                if (i > 9 || checkIfAlreadyPlaced(headCol, i)) {
+                    invalidPlacement = true;
+                }
+            }
+
+            if (invalidPlacement) {
+                for (let i = headRow; i < headRow + length; i++) {
+                    if (i > 9) break;
+                    markInvalidHover(headCol, i)
+                }
+            }
+            if (!invalidPlacement) {
+                for (let i = headRow; i < headRow + length; i++) {markValidHover(headCol, i)}
             }
         }
 
-        if (invalidPlacement) {
-            for (let i = headRow; i < headRow + length; i++) {
-                if (i > 9) break;
-                markInvalidHover(headCol, i)
+
+        else if (getCurrentShipOrientation() === 'vertical') {
+            for (let i = headCol + 1; i < headCol + length; i++) {
+                if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
+                    invalidPlacement = true;
+                }
             }
-        }
-        if (!invalidPlacement) {
-            for (let i = headRow; i < headRow + length; i++) {markValidHover(headCol, i)}
+
+            if (invalidPlacement) {
+                for (let i = headCol; i < headCol + length; i++) {
+                    if (i > 9) break;
+                    markInvalidHover(i, headRow)
+                }
+            }
+            if (!invalidPlacement) {
+                for (let i = headCol; i < headCol + length; i++) {markValidHover(i, headRow)}
+            }
         }
     }
 
