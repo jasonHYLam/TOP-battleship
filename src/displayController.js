@@ -55,7 +55,6 @@ function makeDisplayController() {
 
     function toggleCurrentShipOrientation() {
         return shipOrientations[currentShip] = shipOrientations[currentShip] === 'horizontal' ? 'vertical' : 'horizontal';
-        console.log(shipOrientations[currentShip])
     }
 
     function getCurrentShip() {
@@ -166,14 +165,11 @@ function makeDisplayController() {
 
     function extendMainHover(clickTarget) {
 
-        function determineOtherHoverElements(clickTarget, dataLength) {
+        function determineOtherHoverElements(clickTarget) {
             let invalidPlacement = false;
             const headRow = parseInt(clickTarget.dataset.row)
             const headCol = parseInt(clickTarget.dataset.col)
-            let shipLength = parseInt(dataLength);
-
-
-            console.log(getCurrentShipOrientation() === 'horizontal')
+            let shipLength = getCurrentShipLength();
 
             // this is horizontal
             // get the next few, using array logic
@@ -214,7 +210,7 @@ function makeDisplayController() {
             }
         }
 
-        determineOtherHoverElements(clickTarget, getCurrentShipLength())
+        determineOtherHoverElements(clickTarget)
     }
 
     function showRotatedHover(clickTarget) {
@@ -267,7 +263,8 @@ function makeDisplayController() {
         document.querySelector('.selected-ship-off-grid').classList.add('grey-out')
     }
 
-    function addShipClassToSpace(space) {
+    function addShipClassToSpace(col, row) {
+        let space = document.querySelector(`[data-col="${col}"][data-row="${row}"]`)
         space.classList.add('ship-in-space')
         space.classList.add(getCurrentShip())
     }
@@ -330,6 +327,7 @@ function makeDisplayController() {
 
             // this is to set to rotate/move mode
             if (!currentlyRotating) {
+                console.log('ship head CLICKED and in NOW in rotate mode')
                 setToCurrentlyRotating();
                 setMovingShipToTrue()
                 setCorrespondingShipFromGrid(e.target)
@@ -343,7 +341,6 @@ function makeDisplayController() {
 
             // this is to rotate the ship
             else if (currentlyRotating) {
-                console.log('find f')
                 // check if invalid or out of bounds for rotated placement
                 if (checkInvalidPlacement(e.target)) return;
 
@@ -351,7 +348,8 @@ function makeDisplayController() {
                 removeCurrentShipFromGrid();
                 removeSelectedShipDecoration();
                 removeRotateIcon();
-                convertValidHoverIntoShip();
+                // convertValidHoverIntoShip();
+                placeShip(e.target);
                 // this is where i need to remove current ship 
 
                 // use toggleCurrentShipRotation
@@ -362,14 +360,57 @@ function makeDisplayController() {
                 console.log(getCurrentShipOrientation())
                 resetCurrentShip();
                 disableCurrentlyRotating();
+                setMovingShipToFalse();
+                console.log('ship head CLICKED and disable rotate mode and reset current ship')
             }
         }
     })
 
-    function convertValidHoverIntoShip() {
-        let allHovered = document.querySelectorAll('.valid-hovering')
-        allHovered.forEach(space => addShipClassToSpace(space))
+    function placeShip(clickTarget) {
+        let invalidPlacement = false;
+        const headRow = parseInt(clickTarget.dataset.row)
+        const headCol = parseInt(clickTarget.dataset.col)
+        let shipLength = getCurrentShipLength();
+
+        if (getCurrentShipOrientation() === 'horizontal'
+         && !currentlyRotating
+                || getCurrentShipOrientation() === 'vertical' && currentlyRotating
+        ) {
+            for (let i = headCol; i < headCol + shipLength; i++) {
+                if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
+                    invalidPlacement = true;
+                    break;
+                }
+            }
+
+            if (!invalidPlacement) {
+                for (let i = headCol; i < headCol + shipLength; i++) addShipClassToSpace(i, headRow)
+            }
+        }
+
+
+        else if (getCurrentShipOrientation() === 'vertical'
+        && !currentlyRotating
+                || (getCurrentShipOrientation() == 'horizontal' && getCurrentlyRotating())
+        ) {
+            for (let i = headRow; i < headRow + shipLength; i++) {
+                if (i > 9 || checkIfAlreadyPlaced(headCol, i)) {
+                    invalidPlacement = true;
+                    break;
+                }
+            }
+            if (!invalidPlacement) {
+                for (let i = headRow; i < headRow + shipLength; i++) addShipClassToSpace(headCol, i)
+            }
+        }
+
+
     }
+
+    // function convertValidHoverIntoShip() {
+    //     let allHovered = document.querySelectorAll('.valid-hovering')
+    //     allHovered.forEach(space => addShipClassToSpace(space))
+    // }
 
     // click on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
@@ -381,9 +422,11 @@ function makeDisplayController() {
             //move existing ship
             if (checkIfMovingShip()) {
 
+                console.log('ship is MOVING')
                 //ship head is not clicked
                 if (!checkIfClickShipHead(e.target)) {
-                    console.log('reallyu dont think this happens')
+                    
+                    console.log('ship head NOT clicked, ship is moving')
                     removeShipHead();
                     removeRotateIcon()
                     removeSelectedShipDecoration();
@@ -391,7 +434,8 @@ function makeDisplayController() {
                     setMovingShipToFalse();
                     disableCurrentlyRotating();
 
-                    convertValidHoverIntoShip();
+                    // convertValidHoverIntoShip();
+                    placeShip(e.target)
                     removeAllHovered();
                     addShipHead(e.target);
                     // is it this? maybe
@@ -400,17 +444,19 @@ function makeDisplayController() {
             
                 // ship head is clicked... this should not do anything btw
                 else if (checkIfClickShipHead(e.target)) {
-                    console.log('yeah this SHOULD happen')
+                    console.log('ship head was clicked')
                 }
             }
 
 
             //place ship for the first time
             else {
+                console.log('ship NOT moving, placing for the first time')
                 greyOutSelectedShip();
                 removeClassFromPreviouslySelected();
 
-                convertValidHoverIntoShip();
+                placeShip(e.target);
+                // convertValidHoverIntoShip();
                 removeAllHovered();
                 addShipHead(e.target);
                 resetCurrentShip();
@@ -470,8 +516,7 @@ function makeDisplayController() {
     }
 
     function removeCurrentShipFromGrid() {
-        console.log('find g')
-        console.log(getCurrentShip())
+        console.log(`remove current ship from grid: ${getCurrentShip()}`)
         removeShipFromGrid(getCurrentShip())
     }
 
