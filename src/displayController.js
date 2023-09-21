@@ -54,7 +54,8 @@ function makeDisplayController() {
     }
 
     function toggleCurrentShipOrientation() {
-        shipOrientations[currentShip] === 'horizontal' ? 'vertical' : 'horizontal';
+        return shipOrientations[currentShip] = shipOrientations[currentShip] === 'horizontal' ? 'vertical' : 'horizontal';
+        console.log(shipOrientations[currentShip])
     }
 
     function getCurrentShip() {
@@ -129,7 +130,7 @@ function makeDisplayController() {
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('pregame-space')) {
             removeAllHovered();
-            if (currentShip) extendHorizontalHover(e.target)
+            if (currentShip) extendMainHover(e.target)
             addShipHeadStyleForAllShips(e.target)
         }
     })
@@ -163,7 +164,7 @@ function makeDisplayController() {
             space.classList.add('invalid-hovering')
         }
 
-    function extendHorizontalHover(clickTarget) {
+    function extendMainHover(clickTarget) {
 
         function determineOtherHoverElements(clickTarget, dataLength) {
             let invalidPlacement = false;
@@ -172,24 +173,45 @@ function makeDisplayController() {
             let shipLength = parseInt(dataLength);
 
 
+            console.log(getCurrentShipOrientation() === 'horizontal')
+
             // this is horizontal
             // get the next few, using array logic
-            for (let i = headCol; i < headCol + shipLength; i++) {
-                if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
-                    invalidPlacement = true;
-                    break;
+            if (getCurrentShipOrientation() === 'horizontal') {
+                for (let i = headCol; i < headCol + shipLength; i++) {
+                    if (i > 9 || checkIfAlreadyPlaced(i, headRow)) {
+                        invalidPlacement = true;
+                        break;
+                    }
+                }
+
+                if (!invalidPlacement) {
+                    for (let i = headCol; i < headCol + shipLength; i++) markValidHover(i, headRow)
+                }
+                else if (invalidPlacement) {
+                    for (let i = headCol; i < headCol + shipLength; i++) {
+                        if (i > 9) break;
+                        markInvalidHover(i, headRow)}
                 }
             }
-
-            if (!invalidPlacement) {
-                for (let i = headCol; i < headCol + shipLength; i++) markValidHover(i, headRow)
-            }
-            else if (invalidPlacement) {
-                for (let i = headCol; i < headCol + shipLength; i++) {
-                    if (i > 9) break;
-                    markInvalidHover(i, headRow)}
-            }
             //this, THIS is vertical
+            else if (getCurrentShipOrientation() === 'vertical') {
+                for (let i = headRow; i < headRow + shipLength; i++) {
+                    if (i > 9 || checkIfAlreadyPlaced(headCol, i)) {
+                        invalidPlacement = true;
+                        break;
+                    }
+                }
+
+                if (!invalidPlacement) {
+                    for (let i = headRow; i < headRow + shipLength; i++) markValidHover(headCol, i)
+                }
+                else if (invalidPlacement) {
+                    for (let i = headRow; i < headRow + shipLength; i++) {
+                        if (i > 9) break;
+                        markInvalidHover(headCol, i)}
+                }
+            }
         }
 
         determineOtherHoverElements(clickTarget, getCurrentShipLength())
@@ -284,6 +306,7 @@ function makeDisplayController() {
                 clickTarget.appendChild(clone.children[0])
             }
 
+            // this is to set to rotate/move mode
             if (!currentlyRotating) {
                 setToCurrentlyRotating();
                 setMovingShipToTrue()
@@ -292,15 +315,14 @@ function makeDisplayController() {
                 showRotateIcon(e.target);
                 // may need to use extendHover. 
                 // dont think it's needed here... 
-                extendHorizontalHover(e.target)
+                extendMainHover(e.target)
             }
 
 
+            // this is to rotate the ship
             else if (currentlyRotating) {
                 console.log('find f')
-                // check if invalid or out of bounds
-                // this checks the opposite orientation
-                // need to check vertical, not horizontal
+                // check if invalid or out of bounds for rotated placement
                 if (checkInvalidPlacement(e.target)) return;
 
                 // and use placeShip which just converts hover into ship pieces
@@ -313,11 +335,14 @@ function makeDisplayController() {
                 // use toggleCurrentShipRotation
                 // and maybe resetCurrentShip
                 removeAllHovered();
+                console.log(getCurrentShipOrientation())
+                toggleCurrentShipOrientation();
+                console.log(getCurrentShipOrientation())
                 resetCurrentShip();
+                disableCurrentlyRotating();
             }
         }
     })
-
 
     function convertValidHoverIntoShip() {
         let allHovered = document.querySelectorAll('.valid-hovering')
@@ -330,15 +355,9 @@ function makeDisplayController() {
         if (!currentShip) return
         if (e.target.classList.contains('pregame-space')) {
 
-            // what is even wrong with this dude
             if (checkInvalidPlacement(e.target)) return
             //move existing ship
             if (checkIfMovingShip()) {
-                // wait, what is moving ship and rotateMode about anyway
-                // prevents moving ship, if the ship is in rotate mode
-                console.log(currentlyRotating) // this is true
-                // if not rotating the ship, then do this
-                // prevents sutff happening when simply clicking on the shipHead
 
                 //ship head is not clicked
                 if (!checkIfClickShipHead(e.target)) {
@@ -361,7 +380,6 @@ function makeDisplayController() {
                 else if (checkIfClickShipHead(e.target)) {
                     console.log('yeah this SHOULD happen')
                 }
-
             }
 
 
@@ -370,20 +388,11 @@ function makeDisplayController() {
                 greyOutSelectedShip();
                 removeClassFromPreviouslySelected();
 
-            convertValidHoverIntoShip();
-            removeAllHovered();
-            addShipHead(e.target);
-            // is it this? maybe
-            resetCurrentShip();
-                    // im not sure this needs to be here
+                convertValidHoverIntoShip();
+                removeAllHovered();
+                addShipHead(e.target);
+                resetCurrentShip();
             }
-
-            // might need to do something about these, maybe put all of these into both the above
-            // convertValidHoverIntoShip();
-            // removeAllHovered();
-            // addShipHead(e.target);
-            // // is it this? maybe
-            // resetCurrentShip();
         }
     })
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
@@ -408,22 +417,23 @@ function makeDisplayController() {
                 ) {
             // means row is the same, and columns change
             for (let i = headCol + 1; i < headCol + length; i++) {
-                if (i > 10) cannotPlaceShip = true;
-                if (checkIfAlreadyPlaced(i, headRow)) cannotPlaceShip = true;
+                if (i > 10 || checkIfAlreadyPlaced(i, headRow)) {
+                    cannotPlaceShip = true;
+                    break;
+                }
             }
         }
 
-        // okay something is wrong here... 
-        // does currentlyRotating need to be checked here?
-        // this might 
         else if ((getCurrentShipOrientation() === 'vertical' 
         && !currentlyRotating)
                 || (getCurrentShipOrientation() == 'horizontal' && getCurrentlyRotating())
                 ) {
             // means column is the same, and rows change
             for (let i = headRow + 1; i < headRow + length; i++) {
-                if (i > 10) cannotPlaceShip = true;
-                if (checkIfAlreadyPlaced(headCol, i)) cannotPlaceShip = true;
+                if (i > 10 || checkIfAlreadyPlaced(headCol, i)) {
+                    cannotPlaceShip = true;
+                    break;
+                }
             }
         }
         return cannotPlaceShip;
