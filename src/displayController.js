@@ -136,9 +136,7 @@ function makeDisplayController() {
     // hovering over the ship head to show rotated hover
     bodyElement.addEventListener('mouseover', (e) => {
         if (e.target.classList.contains('ship-head')) {
-            console.log(currentlyRotating)
             if (currentlyRotating) {
-                console.log('should show rotated hover')
                 showRotatedHover(e.target)
             }
         }
@@ -173,6 +171,7 @@ function makeDisplayController() {
             let shipLength = parseInt(dataLength);
 
 
+            
             console.log(shipLength)
 
             // this is horizontal
@@ -197,6 +196,7 @@ function makeDisplayController() {
             //this, THIS is vertical
         }
 
+        // this may or may not be working
         console.log('next should show current ship length')
         console.log(getCurrentShipLength())
         determineOtherHoverElements(clickTarget, getCurrentShipLength())
@@ -214,6 +214,8 @@ function makeDisplayController() {
             }
         }
         console.log(invalidPlacement)
+        console.log(headRow)
+        console.log(length)
         if (invalidPlacement) {
 
             for (let i = headRow; i < headRow + length; i++) {
@@ -245,6 +247,10 @@ function makeDisplayController() {
         document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
     }
 
+    function checkIfClickShipHead(clickTarget) {
+        return clickTarget.classList.contains('ship-head')
+    }
+
     // clicking on spaces on grid
 
     // i need to not add stuff when there's a element too close... do i need to use row and column?
@@ -273,10 +279,11 @@ function makeDisplayController() {
         icon.parentNode.removeChild(icon)
     }
 
-    // clicking ship head to move or rotate
+    // click on ship head to move or rotate
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('ship-head')) {
             console.log('did this happen... when clicking to make ship disappear')
+
 
             // this sets currentShip, when clicking on the ship head
             function setCorrespondingShipFromGrid(clickTarget) {
@@ -290,6 +297,7 @@ function makeDisplayController() {
                 clickTarget.appendChild(clone.children[0])
             }
 
+            console.log(currentlyRotating)
             if (!currentlyRotating) {
                 setToCurrentlyRotating();
                 setMovingShipToTrue()
@@ -297,11 +305,14 @@ function makeDisplayController() {
                 decorateSelectedShip(e.target)
                 showRotateIcon(e.target);
                 // may need to use extendHover. 
+                // dont think it's needed here... 
                 extendHorizontalHover(e.target)
+                console.log(getCurrentShip())
             }
 
 
             else if (currentlyRotating) {
+                console.log('this shouldnthappen')
                 // check if invalid or out of bounds
                 // this checks the opposite orientation
                 // need to check vertical, not horizontal
@@ -316,6 +327,7 @@ function makeDisplayController() {
                 // and maybe resetCurrentShip
                 removeAllHovered();
                 resetCurrentShip();
+                console.log('definitely shouldnt happen')
             }
         }
     })
@@ -329,46 +341,74 @@ function makeDisplayController() {
     // click on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
+        console.log(getCurrentShip())
+            // this is new
+            console.log(
+        checkIfClickShipHead(e.target)
+
+            )
         if (!currentShip) return
         if (e.target.classList.contains('pregame-space')) {
 
+
+            // what is even wrong with this dude
             if (checkInvalidPlacement(e.target)) return
             //move existing ship
             if (checkIfMovingShip()) {
+                // wait, what is moving ship and rotateMode about anyway
             // prevents moving ship, if the ship is in rotate mode
             console.log(currentlyRotating) // this is true
             // if not rotating the ship, then do this
-                if (!currentlyRotating) {
+            // prevents sutff happening when simply clicking on the shipHead
+
+                // if (!currentlyRotating) {
+                if (!checkIfClickShipHead(e.target)) {
+                    console.log('reallyu dont think this happens')
                     removeShipHead();
                     removeRotateIcon()
-                    // also need to remove movingShip decoration... 
                     removeSelectedShipDecoration();
                     removeCurrentShipFromGrid();
                     setMovingShipToFalse();
                     disableCurrentlyRotating();
+
+                    convertValidHoverIntoShip();
+                    removeAllHovered();
+                    addShipHead(e.target);
+                    // is it this? maybe
+                    resetCurrentShip();
                 }
             
             }
             //place ship for the first time
             else {
+                console.log('surely this doesnt happen')
                 console.log(currentlyRotating)
                 greyOutSelectedShip();
                 removeClassFromPreviouslySelected();
-            }
 
-            // let allHovered = document.querySelectorAll('.valid-hovering')
-            // allHovered.forEach(space => addShipClassToSpace(space))
             convertValidHoverIntoShip();
             removeAllHovered();
             addShipHead(e.target);
+            // is it this? maybe
             resetCurrentShip();
+                    // im not sure this needs to be here
+            }
+
+            // might need to do something about these, maybe put all of these into both the above
+            // convertValidHoverIntoShip();
+            // removeAllHovered();
+            // addShipHead(e.target);
+            // // is it this? maybe
+            // resetCurrentShip();
         }
     })
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
     function checkIfAlreadyPlaced(col, row) {
+        // something wrong here now
         return document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList.contains('ship-in-space')
     }
 
+    //check if can place the ship
     function checkInvalidPlacement(clickTarget) {
         // needs a vertical component; currently only horizontal right now
         let cannotPlaceShip = false;
@@ -377,7 +417,6 @@ function makeDisplayController() {
         const headRow = parseInt(clickTarget.dataset.row)
         const headCol = parseInt(clickTarget.dataset.col)
 
-        console.log(getCurrentShipOrientation());
         // requires checking if currently rotating; if so, check the opposite orientation
         if (getCurrentShipOrientation() === 'horizontal' && !currentlyRotating
                 || getCurrentShipOrientation() === 'vertical' && currentlyRotating) {
