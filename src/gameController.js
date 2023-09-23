@@ -79,12 +79,6 @@ export function makeGameController() {
     // playerGameboard.placeShip(3, 'horizontal', [2,3]);
     // playerGameboard.placeShip(2, 'vertical', [1,2]);
 
-    // computerGameboard.placeShip(5, 'vertical', [9,3]);
-    // computerGameboard.placeShip(4, 'horizontal', [0,8]);
-    // getComputerGameboard().placeShip(3, 'vertical', [5,6]);
-    // computerGameboard.placeShip(3, 'horizontal', [2,3]);
-    // getComputerGameboard().placeShip(2, 'vertical', [1,2]);
-    // console.log(getComputerGameboard().allShipCoords)
     function placeAllShipsOnComputerBoard() {
         tryRandomPlacementUntilSuccess(5)
         tryRandomPlacementUntilSuccess(4)

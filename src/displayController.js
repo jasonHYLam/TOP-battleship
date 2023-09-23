@@ -3,6 +3,8 @@ import { Gameboard } from "./gameboard";
 
 function makeDisplayController() {
 
+    let gameController = makeGameController();
+
     let currentShip = null;
     let movingShip = false;
     let currentlyRotating = false;
@@ -17,19 +19,19 @@ function makeDisplayController() {
     function findShipFromClassListAndPerformAction(list, action) {
         switch (true) {
             case list.contains('carrier'):
-                action('carrier'); break;
+                return action('carrier'); break;
 
             case list.contains('battleship'):
-                action('battleship'); break;
+                return action('battleship'); break;
 
             case list.contains('cruiser'):
-                action('cruiser'); break;
+                return action('cruiser'); break;
 
             case list.contains('submarine'):
-                action('submarine'); break;
+                return action('submarine'); break;
 
             case list.contains('destroyer'):
-                action('destroyer'); break;
+                return action('destroyer'); break;
         }
     }
 
@@ -105,24 +107,6 @@ function makeDisplayController() {
         return newElement;
     }
 
-    function checkIfCanStartGame() {
-        // make sure all ships are placed
-        let canStart = true;
-        for (let ship in shipList) {
-            if (shipList[ship].isPlaced === false) canStart = false;
-        }
-        if (canStart) {
-            activateStartButton()
-        }
-        // or setNotPlaced if moving the ship
-        // then activate the play button
-    }
-
-    function activateStartButton() {
-        const startButton = document.querySelector('.start-button')
-        startButton.style.display = 'block'
-        console.log(startButton)
-    }
 
     // pregame display code
     function createPreGameGrid() {
@@ -568,6 +552,53 @@ function makeDisplayController() {
         }
     })
 
+    function checkIfCanStartGame() {
+        // make sure all ships are placed
+        let canStart = true;
+        for (let ship in shipList) {
+            if (shipList[ship].isPlaced === false) canStart = false;
+        }
+        if (canStart) {
+            activateStartButton()
+        }
+        // or setNotPlaced if moving the ship
+        // then activate the play button
+    }
+
+    function activateStartButton() {
+        const startButton = document.querySelector('.start-button')
+        startButton.style.display = 'block'
+        console.log(startButton)
+
+        addToPlayerGameBoard();
+        // i sincerely hope that this will populate player gameboard, i don't think it will thougth:
+        displayBothGameboards();
+    }
+
+    function getLengthAndOrientationFromHeadClass(list) {
+        return findShipFromClassListAndPerformAction(list, (ship) => {
+            return [
+                shipList[ship].length,
+                shipList[ship].orientation,
+            ]
+        })
+
+    }
+
+    function addToPlayerGameBoard() {
+        //needs to take pieces from the grid
+        const shipHeads = document.querySelectorAll('.ship-head')
+        shipHeads.forEach(head => {
+            let [length, orientation] = getLengthAndOrientationFromHeadClass(head.classList)
+            gameController.getPlayerGameboard().placeShip(
+                length,
+                orientation,
+                [parseInt(head.dataset.col),
+                parseInt(head.dataset.row)]
+            )
+        })
+    }
+
     function determineText(space) {
         if (!space.hasShip && !space.wasGuessed) return '.'
         if (space.hasShip && !space.wasGuessed) return 'o'
@@ -611,7 +642,6 @@ function makeDisplayController() {
         })
     }
 
-    let gameController = makeGameController();
 
     function displayBothGameboards() {
         displayPlayerGameboard(gameController.getPlayerGameboard())
@@ -633,7 +663,7 @@ function makeDisplayController() {
     // would i need to consider a future 2 player version?
 
     createPreGameGrid();
-    displayBothGameboards();
+    // displayBothGameboards();
     // but these need playerGameboard and computerGameboard... 
     // figure it out from tic tac toe...
     // for each of these spaces

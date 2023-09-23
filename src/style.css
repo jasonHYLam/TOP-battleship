@@ -50,7 +50,7 @@ body {
 
 .start-button {
     background-color: bisque;
-    display: none;
+    /* display: none; */
     cursor: pointer;
 }
 .ship-container {
