@@ -21,20 +21,88 @@ export function makeGameController() {
 
     let isGameOver = false;
 
-    const getEnemyGameboard = () => enemyGameboard()
+    const getEnemyGameboard = () => enemyGameboard
 
+    function tryRandomPlacementUntilSuccess(length) {
+        // get reference to gameboard; 
+        // maybe if not successful, oldShipCoords becomes this... phooey
+        let oldShipCoords = JSON.stringify(getComputerGameboard().allShipCoords)
+        // console.log(oldShipCoords)
+        // get reference to new gameboard
+        let newShipCoords = oldShipCoords
+        // get random orientation and random column and row, both between 0 and 9
+        function generateRandomOrientation() {
+            return ['horizontal', 'vertical'][Math.round(Math.random())]
+        }
+
+        function generateRandomCoordinates() {
+            const randomCol = Math.floor(Math.random() * 10)
+            const randomRow = Math.floor(Math.random() * 10)
+            // console.log(randomCol, randomRow)
+            return [randomCol, randomRow]
+        }
+        let isValidPlacement = false
+        // have isValidPlacement set to false
+        // while (!isValidPlacement) {
+            // if vertical
+            // place ship
+            // if oldGameboard's has Ship !== newGameboard's has Ship then set validplacement
+        // }
+
+        while (!isValidPlacement) {
+            if (generateRandomOrientation() === 'horizontal') {
+                console.log('try horizontal placement')
+                getComputerGameboard().placeShip(length, 'horizontal', generateRandomCoordinates())
+                newShipCoords = JSON.stringify(getComputerGameboard().allShipCoords)
+                // console.log(`new ship coords: ${newShipCoords}`)
+                // console.log(newShipCoords)
+                if (oldShipCoords !== newShipCoords) isValidPlacement = true;
+                console.log(isValidPlacement)
+            }
+            else if (generateRandomOrientation() === 'vertical') {
+                console.log('try vertical placement')
+                getComputerGameboard().placeShip(length, 'vertical', generateRandomCoordinates())
+                newShipCoords = JSON.stringify(getComputerGameboard().allShipCoords)
+                // console.log(`new ship coords: ${newShipCoords}`)
+                // console.log(newShipCoords)
+                if (oldShipCoords !== newShipCoords) isValidPlacement = true;
+                console.log(isValidPlacement)
+            }
+        }
+    }
+
+    // somehow, i'll need to get the grid placed ships, and convert them into this.
     // wait, is this mocking? it may be worth a read again...
     // playerGameboard.placeShip(5, 'vertical', [9,6]);
     // playerGameboard.placeShip(4, 'horizontal', [0,8]);
     // playerGameboard.placeShip(3, 'vertical', [5,6]);
     // playerGameboard.placeShip(3, 'horizontal', [2,3]);
-    playerGameboard.placeShip(2, 'vertical', [1,2]);
+    // playerGameboard.placeShip(2, 'vertical', [1,2]);
 
     // computerGameboard.placeShip(5, 'vertical', [9,3]);
     // computerGameboard.placeShip(4, 'horizontal', [0,8]);
-    computerGameboard.placeShip(3, 'vertical', [5,6]);
+    // getComputerGameboard().placeShip(3, 'vertical', [5,6]);
     // computerGameboard.placeShip(3, 'horizontal', [2,3]);
-    computerGameboard.placeShip(2, 'vertical', [1,2]);
+    // getComputerGameboard().placeShip(2, 'vertical', [1,2]);
+    // console.log(getComputerGameboard().allShipCoords)
+    console.log(5)
+    tryRandomPlacementUntilSuccess(5)
+    console.log(' ')
+
+    console.log(4)
+    tryRandomPlacementUntilSuccess(4)
+    console.log(' ')
+
+    console.log(3)
+    tryRandomPlacementUntilSuccess(3)
+    console.log(' ')
+
+    console.log(3)
+    tryRandomPlacementUntilSuccess(3)
+    console.log(' ')
+
+    console.log(2)
+    tryRandomPlacementUntilSuccess(2)
 
     // maybe i need to change this? maybe not!
     function swapPlayerAndEnemy() {
@@ -65,32 +133,6 @@ export function makeGameController() {
         })
     }
 
-    // check if the guessedCoords array changes; if so, the attack was successful.
-    // this absolutely must get tested...
-    // function tryAttackUntilSuccess() {
-    //     let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-    //     let currentGuesses = initialGuesses;
-    //     let validPlayMade = false;
-    //     switch (currentPlayer) {
-    //         case player:
-    //             while (!validPlayMade) {
-    //                 // let [col, row] = prompt('coords to attack, in "x,y"').split(",")
-    //                 const col = parseInt(prompt('col to attack'));
-    //                 const row = parseInt(prompt('row to attack'));
-    //                 currentPlayer.attack(enemyGameboard, [col, row])
-    //                 currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-    //                 if (initialGuesses !== currentGuesses) validPlayMade = true;
-    //             }
-    //             break;
-    //         case computer:
-    //             while (!validPlayMade) {
-    //                 currentPlayer.randomAttack(enemyGameboard)
-    //                 currentGuesses = JSON.stringify(enemyGameboard.guessedCoords)
-    //                 if (initialGuesses !== currentGuesses) validPlayMade = true;
-    //             }
-    //             break;
-    //     }
-    // }
     function tryRandomAttackUntilSuccess() {
 
         let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)

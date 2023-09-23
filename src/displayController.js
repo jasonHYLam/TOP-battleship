@@ -33,28 +33,44 @@ function makeDisplayController() {
         }
     }
 
-    let shipLengths = {
-        'carrier': 5,
-        'battleship': 4,
-        'cruiser': 3,
-        'submarine': 3,
-        'destroyer': 2,
-    }
-
-    let shipOrientations = {
-        'carrier': 'horizontal',
-        'battleship': 'horizontal',  
-        'cruiser': 'horizontal',  
-        'submarine': 'horizontal',  
-        'destroyer': 'horizontal',  
+    let shipList = {
+        'carrier': {
+            length: 5,
+            orientation: 'horizontal',
+            isPlaced: false,
+        },
+        'battleship': {
+            length: 4,
+            orientation: 'horizontal',
+            isPlaced: false,
+        },
+        'cruiser': {
+            length: 3,
+            orientation: 'horizontal',
+            isPlaced: false,
+        },
+        'submarine': {
+            length: 3,
+            orientation: 'horizontal',
+            isPlaced: false,
+        },
+        'destroyer': {
+            length: 2,
+            orientation: 'horizontal',
+            isPlaced: false,
+        },
     }
 
     function getCurrentShipOrientation() {
-        return shipOrientations[currentShip]
+        return shipList[currentShip].orientation
     }
 
     function toggleCurrentShipOrientation() {
-        return shipOrientations[currentShip] = shipOrientations[currentShip] === 'horizontal' ? 'vertical' : 'horizontal';
+        return shipList[currentShip].orientation = shipList[currentShip].orientation === 'horizontal' ? 'vertical' : 'horizontal';
+    }
+
+    function declareCurrentShipPlaced() {
+        return shipList[currentShip].isPlaced = true;
     }
 
     function getCurrentShip() {
@@ -74,8 +90,9 @@ function makeDisplayController() {
         currentShip = null
     }
 
+    //need to change this
     function getCurrentShipLength() {
-        return shipLengths[currentShip];
+        return shipList[currentShip].length;
     }
 
     let bodyElement = document.querySelector('body')
@@ -86,6 +103,25 @@ function makeDisplayController() {
         if (text) newElement.textContent = text;
         if (parent) parent.appendChild(newElement)
         return newElement;
+    }
+
+    function checkIfCanStartGame() {
+        // make sure all ships are placed
+        let canStart = true;
+        for (let ship in shipList) {
+            if (shipList[ship].isPlaced === false) canStart = false;
+        }
+        if (canStart) {
+            activateStartButton()
+        }
+        // or setNotPlaced if moving the ship
+        // then activate the play button
+    }
+
+    function activateStartButton() {
+        const startButton = document.querySelector('.start-button')
+        startButton.style.display = 'block'
+        console.log(startButton)
     }
 
     // pregame display code
@@ -407,11 +443,6 @@ function makeDisplayController() {
 
     }
 
-    // function convertValidHoverIntoShip() {
-    //     let allHovered = document.querySelectorAll('.valid-hovering')
-    //     allHovered.forEach(space => addShipClassToSpace(space))
-    // }
-
     // click on the grid to place a ship
     bodyElement.addEventListener('click', (e) => {
         // don't allow click if ship is not selected
@@ -434,12 +465,12 @@ function makeDisplayController() {
                     setMovingShipToFalse();
                     disableCurrentlyRotating();
 
-                    // convertValidHoverIntoShip();
                     placeShip(e.target)
                     removeAllHovered();
                     addShipHead(e.target);
-                    // is it this? maybe
+                    declareCurrentShipPlaced();
                     resetCurrentShip();
+                    checkIfCanStartGame();
                 }
             
                 // ship head is clicked... this should not do anything btw
@@ -448,7 +479,6 @@ function makeDisplayController() {
                 }
             }
 
-
             //place ship for the first time
             else {
                 console.log('ship NOT moving, placing for the first time')
@@ -456,23 +486,21 @@ function makeDisplayController() {
                 removeClassFromPreviouslySelected();
 
                 placeShip(e.target);
-                // convertValidHoverIntoShip();
                 removeAllHovered();
                 addShipHead(e.target);
+                declareCurrentShipPlaced();
                 resetCurrentShip();
+                checkIfCanStartGame();
             }
         }
     })
     // for length of ship, along horionztal or vertical, check each space if out of bounds or if ship-in-space
     function checkIfAlreadyPlaced(col, row) {
-        // if (col > 9 || row > 9) return
-        // something wrong here now
         return document.querySelector(`[data-col="${col}"][data-row="${row}"]`).classList.contains('ship-in-space')
     }
 
     //check if can place the ship
     function checkInvalidPlacement(clickTarget) {
-        // needs a vertical component; currently only horizontal right now
         let cannotPlaceShip = false;
 
         const length = getCurrentShipLength();
@@ -483,14 +511,8 @@ function makeDisplayController() {
         console.log(currentlyRotating)
 
         // requires checking if currently rotating; if so, check the opposite orientation
-        // this should be happening instead. so shouldnt be rotating then?
-        // if it is supposed to be rotating, then there should be another check
-        // also, why did i check both move and rotate?
-        if (getCurrentShipOrientation() === 'horizontal'
-         && !currentlyRotating
-                || getCurrentShipOrientation() === 'vertical' && 
-                // currentlyRotating
-                checkIfClickShipHead(clickTarget)
+        if (getCurrentShipOrientation() === 'horizontal'&& !currentlyRotating
+                || getCurrentShipOrientation() === 'vertical' && checkIfClickShipHead(clickTarget)
                 ) {
             // means row is the same, and columns change
             for (let i = headCol + 1; i < headCol + length; i++) {
@@ -501,13 +523,8 @@ function makeDisplayController() {
             }
         }
 
-        // moving the 
-        else if ((getCurrentShipOrientation() === 'vertical' 
-        && !currentlyRotating)
-                || (getCurrentShipOrientation() == 'horizontal' && 
-                // getCurrentlyRotating()
-                checkIfClickShipHead(clickTarget)
-                )
+        else if ((getCurrentShipOrientation() === 'vertical' && !currentlyRotating)
+                || getCurrentShipOrientation() == 'horizontal' && checkIfClickShipHead(clickTarget)
                 ) {
             // means column is the same, and rows change
             for (let i = headRow + 1; i < headRow + length; i++) {

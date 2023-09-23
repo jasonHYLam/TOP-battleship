@@ -37,7 +37,13 @@ class Gameboard {
     }
 
     checkIfAlreadyPlaced(col, row) {
+        // console.log(col, row)
+        // so are hasShip not true?
+        // this.grid, is it different to computerGameboard
+        // is this.grid[row][col] a space?
+        // console.log(this.grid[row][col])
         if (this.grid[row][col].hasShip === true) return true;
+        // somehow this is not working as expected
         return false;
     }
 
@@ -46,25 +52,43 @@ class Gameboard {
     }
 
     placeShip(length, orientation, [startCol, startRow]) {
+        let invalidPlacement = false;
 
         // test if start coord is out of bounds
         if (this.isOutOfBounds(startCol, startRow)) return 'out of bounds';
 
         let newShip = initialiseShip(length);
         if (!newShip) return;
+        console.log(startCol, startRow)
 
         switch(orientation) {
             // if orientation is horizontal
             // stuff happens from left to right
             case 'horizontal':
                 //loop for length and check if out of bounds or already occupied; if so cancel execution
+                // i get the feeling that something is wrong here...
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds';
-                    if (this.checkIfAlreadyPlaced(startRow, startCol + i)) return 'position already occupied';
+                    console.log(startCol + i, startRow)
+                    // if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds';
+                    // if (this.isOutOfBounds(startRow, startCol + i)) {
+                    if (this.isOutOfBounds(startCol + i, startRow))  {
+                        invalidPlacement = true;
+                        return;
+                    }
+                    // if (this.checkIfAlreadyPlaced(startRow, startCol + i)) 
+                    if (this.checkIfAlreadyPlaced(startCol + i, startRow)) 
+                    {
+                        console.log('hehhhhh')
+                    invalidPlacement = true;
+                    return 'position already occupied: tried horizontal';
+                    }
                 }
+                console.log('passed horizontal check')
 
                 // else, loop along the row (occupy columns of the same row)
                 // at each grid square, occupy with ship ID
+                if (!invalidPlacement) {
+                    console.log('valid horizontal placement lets go')
                 for (let i = 0; i< length; i++) {
                    this.grid[startRow][startCol + i].hasShip = true;
                    // this may be not good
@@ -75,6 +99,18 @@ class Gameboard {
                    // change this from spaces, to coordinates, cus i don't want a copy of objects
                    this.populateShipCoordsArray(startCol + i, startRow)
                 }
+
+                }
+                // for (let i = 0; i< length; i++) {
+                //    this.grid[startRow][startCol + i].hasShip = true;
+                //    // this may be not good
+                //    this.grid[startRow][startCol + i].ship = newShip;
+
+                //    // may be an error in the col and row argument order
+                //    //not understand...
+                //    // change this from spaces, to coordinates, cus i don't want a copy of objects
+                //    this.populateShipCoordsArray(startCol + i, startRow)
+                // }
                 break
 
             // if orientation is vertical
@@ -82,11 +118,24 @@ class Gameboard {
             // row[0] is bottom, row[9] to top, due to the `9 - `
             case 'vertical':
                 for (let i = 0; i< length; i++) {
-                    if (this.isOutOfBounds(startRow + i, startCol)) return 'out of bounds'
-                    if (this.checkIfAlreadyPlaced(startRow + i, startCol)) return 'position already occupied'
+                    // if (this.isOutOfBounds(startRow + i, startCol)) return 'out of bounds'
+                    if (this.isOutOfBounds(startCol, startRow + i)) {
+                        invalidPlacement = true;
+                        return;
+                    }
+                    if (this.checkIfAlreadyPlaced(startCol, startRow + i)) 
+                    {
+                        console.log('brrrrr')
+                    invalidPlacement = true;
+                    return 'position already occupied: tried vertical'
+                    }
+                console.log('passed vertical check')
+
                 }
 
                 // and then put stuff along the column (occupy rows of the same column)
+                if (!invalidPlacement) {
+                    console.log('valid vertical placement lets go')
                 for (let i = 0; i< length; i++) {
                     this.grid[startRow + i][startCol].hasShip = true;
                     this.grid[startRow + i][startCol].ship = newShip;
@@ -95,6 +144,16 @@ class Gameboard {
                    // change this from spaces, to coordinates, cus i don't want a copy of objects
                    this.populateShipCoordsArray(startCol, startRow + i)
                 }
+
+                }
+                // for (let i = 0; i< length; i++) {
+                //     this.grid[startRow + i][startCol].hasShip = true;
+                //     this.grid[startRow + i][startCol].ship = newShip;
+
+                //    // may be an error in the col and row argument order
+                //    // change this from spaces, to coordinates, cus i don't want a copy of objects
+                //    this.populateShipCoordsArray(startCol, startRow + i)
+                // }
                 break
         }
     }
@@ -121,6 +180,7 @@ class Gameboard {
         //how do i prevent failure to place a ship? is it 
         // there are several options... 
         // while () {}
+        // i had somethinglike tryAttackUntilSuccess
         this.placeShip(5, generateRandomOrientation(), generateRandomCoordinates())
 
     }

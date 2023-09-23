@@ -21,6 +21,7 @@ body {
     width: 1500px;
     height: 700px;
     background-color: cornflowerblue;
+    /* display: none; */
 }
 
 .blocker {
@@ -45,6 +46,12 @@ body {
     display: flex;
     flex-direction: row;
     position: relative;
+}
+
+.start-button {
+    background-color: bisque;
+    display: none;
+    cursor: pointer;
 }
 .ship-container {
     height: auto;
