@@ -85,24 +85,15 @@ export function makeGameController() {
     // computerGameboard.placeShip(3, 'horizontal', [2,3]);
     // getComputerGameboard().placeShip(2, 'vertical', [1,2]);
     // console.log(getComputerGameboard().allShipCoords)
-    console.log(5)
-    tryRandomPlacementUntilSuccess(5)
-    console.log(' ')
+    function placeAllShipsOnComputerBoard() {
+        tryRandomPlacementUntilSuccess(5)
+        tryRandomPlacementUntilSuccess(4)
+        tryRandomPlacementUntilSuccess(3)
+        tryRandomPlacementUntilSuccess(3)
+        tryRandomPlacementUntilSuccess(2)
+    }
 
-    console.log(4)
-    tryRandomPlacementUntilSuccess(4)
-    console.log(' ')
-
-    console.log(3)
-    tryRandomPlacementUntilSuccess(3)
-    console.log(' ')
-
-    console.log(3)
-    tryRandomPlacementUntilSuccess(3)
-    console.log(' ')
-
-    console.log(2)
-    tryRandomPlacementUntilSuccess(2)
+    placeAllShipsOnComputerBoard();
 
     // maybe i need to change this? maybe not!
     function swapPlayerAndEnemy() {

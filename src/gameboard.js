@@ -59,58 +59,33 @@ class Gameboard {
 
         let newShip = initialiseShip(length);
         if (!newShip) return;
-        console.log(startCol, startRow)
 
         switch(orientation) {
             // if orientation is horizontal
             // stuff happens from left to right
             case 'horizontal':
                 //loop for length and check if out of bounds or already occupied; if so cancel execution
-                // i get the feeling that something is wrong here...
                 for (let i = 0; i< length; i++) {
                     console.log(startCol + i, startRow)
-                    // if (this.isOutOfBounds(startRow, startCol + i)) return 'out of bounds';
-                    // if (this.isOutOfBounds(startRow, startCol + i)) {
                     if (this.isOutOfBounds(startCol + i, startRow))  {
                         invalidPlacement = true;
                         return;
                     }
-                    // if (this.checkIfAlreadyPlaced(startRow, startCol + i)) 
-                    if (this.checkIfAlreadyPlaced(startCol + i, startRow)) 
-                    {
-                        console.log('hehhhhh')
-                    invalidPlacement = true;
-                    return 'position already occupied: tried horizontal';
+                    if (this.checkIfAlreadyPlaced(startCol + i, startRow)) {
+                        invalidPlacement = true;
+                        return 'position already occupied: tried horizontal';
                     }
                 }
-                console.log('passed horizontal check')
 
                 // else, loop along the row (occupy columns of the same row)
                 // at each grid square, occupy with ship ID
                 if (!invalidPlacement) {
-                    console.log('valid horizontal placement lets go')
-                for (let i = 0; i< length; i++) {
-                   this.grid[startRow][startCol + i].hasShip = true;
-                   // this may be not good
-                   this.grid[startRow][startCol + i].ship = newShip;
-
-                   // may be an error in the col and row argument order
-                   //not understand...
-                   // change this from spaces, to coordinates, cus i don't want a copy of objects
-                   this.populateShipCoordsArray(startCol + i, startRow)
+                    for (let i = 0; i< length; i++) {
+                    this.grid[startRow][startCol + i].hasShip = true;
+                    this.grid[startRow][startCol + i].ship = newShip;
+                    this.populateShipCoordsArray(startCol + i, startRow)
+                    }
                 }
-
-                }
-                // for (let i = 0; i< length; i++) {
-                //    this.grid[startRow][startCol + i].hasShip = true;
-                //    // this may be not good
-                //    this.grid[startRow][startCol + i].ship = newShip;
-
-                //    // may be an error in the col and row argument order
-                //    //not understand...
-                //    // change this from spaces, to coordinates, cus i don't want a copy of objects
-                //    this.populateShipCoordsArray(startCol + i, startRow)
-                // }
                 break
 
             // if orientation is vertical
@@ -118,71 +93,26 @@ class Gameboard {
             // row[0] is bottom, row[9] to top, due to the `9 - `
             case 'vertical':
                 for (let i = 0; i< length; i++) {
-                    // if (this.isOutOfBounds(startRow + i, startCol)) return 'out of bounds'
                     if (this.isOutOfBounds(startCol, startRow + i)) {
                         invalidPlacement = true;
                         return;
                     }
-                    if (this.checkIfAlreadyPlaced(startCol, startRow + i)) 
-                    {
-                        console.log('brrrrr')
-                    invalidPlacement = true;
-                    return 'position already occupied: tried vertical'
+                    if (this.checkIfAlreadyPlaced(startCol, startRow + i)) {
+                        invalidPlacement = true;
+                        return 'position already occupied: tried vertical'
                     }
-                console.log('passed vertical check')
-
                 }
 
                 // and then put stuff along the column (occupy rows of the same column)
                 if (!invalidPlacement) {
-                    console.log('valid vertical placement lets go')
-                for (let i = 0; i< length; i++) {
-                    this.grid[startRow + i][startCol].hasShip = true;
-                    this.grid[startRow + i][startCol].ship = newShip;
-
-                   // may be an error in the col and row argument order
-                   // change this from spaces, to coordinates, cus i don't want a copy of objects
-                   this.populateShipCoordsArray(startCol, startRow + i)
+                    for (let i = 0; i< length; i++) {
+                        this.grid[startRow + i][startCol].hasShip = true;
+                        this.grid[startRow + i][startCol].ship = newShip;
+                    this.populateShipCoordsArray(startCol, startRow + i)
+                    }
                 }
-
-                }
-                // for (let i = 0; i< length; i++) {
-                //     this.grid[startRow + i][startCol].hasShip = true;
-                //     this.grid[startRow + i][startCol].ship = newShip;
-
-                //    // may be an error in the col and row argument order
-                //    // change this from spaces, to coordinates, cus i don't want a copy of objects
-                //    this.populateShipCoordsArray(startCol, startRow + i)
-                // }
                 break
         }
-    }
-
-    // what do i place on the board?
-    // 5 pieces i think
-    // hmm how do i keep trying to place the ships if they are out of bounds or already palced?
-    // should i just put each in a while loop? or use recursion?
-
-    placeAllShipsOnBoard() {
-        // need to put ships horizontally or vertically randomly
-        // this will only generate one orientation... make it a separate function
-        function generateRandomOrientation() {
-            return ['horizontal', 'vertical'].Math.round(Math.random())
-        }
-
-        function generateRandomCoordinates() {
-            const randomCol = Math.floor(Math.random() * 10)
-            const randomRow = Math.floor(Math.random() * 10)
-            return [randomCol, randomRow]
-        }
-
-
-        //how do i prevent failure to place a ship? is it 
-        // there are several options... 
-        // while () {}
-        // i had somethinglike tryAttackUntilSuccess
-        this.placeShip(5, generateRandomOrientation(), generateRandomCoordinates())
-
     }
 
     getPosition(col, row) {
