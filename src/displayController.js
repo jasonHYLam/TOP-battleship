@@ -672,7 +672,7 @@ function makeDisplayController() {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
             row.map((space, colIndex) => {
                 // let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column',  determineCellStyle(space) )
-                let spaceElement = populateElementInfo('div', null, rowElement, 'column',  determineCellStyle(space) )
+                let spaceElement = populateElementInfo('div', null, rowElement, 'column', 'game-column', determineCellStyle(space) )
                 determineMark(space, spaceElement)
                 spaceElement.dataset.col = colIndex;
                 spaceElement.dataset.row = rowIndex;
@@ -682,7 +682,7 @@ function makeDisplayController() {
 
     //hovering over the playable gameboard
     bodyElement.addEventListener('mouseover', (e) => {
-        if (e.target.classList.contains('clickable')) {
+        if (e.target.classList.contains('game-column')) {
             removeHoveredClass('game-hovering')
             e.target.classList.add('game-hovering')
         }
