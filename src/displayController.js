@@ -294,7 +294,9 @@ function makeDisplayController() {
     }
 
     function removeShipHead() {
-        document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
+        const currentShipHead = document.querySelector(`.ship-head.${getCurrentShip()}`);
+        if (currentShipHead) currentShipHead.classList.remove('ship-head')
+        // document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
     }
 
     function checkIfClickShipHead(clickTarget) {
@@ -340,7 +342,7 @@ function makeDisplayController() {
 
             function showRotateIcon(clickTarget) {
                 if (clickTarget.querySelector('i')) clickTarget.removeChild(clickTarget.querySelector('i'))
-                const template = document.querySelector('#icon-template')
+                const template = document.querySelector('#rotate-template')
                 const clone =template.content.cloneNode(true)
                 clickTarget.appendChild(clone.children[0])
             }
@@ -546,6 +548,7 @@ function makeDisplayController() {
         if (list.contains('ship')) {
             if (list.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
             removeClassFromPreviouslySelected();
+            removeShipHead()
             removeAllHovered();
             (list.add('selected-ship-off-grid'))
             setCurrentShipFromDOM(e.target)
@@ -612,11 +615,21 @@ function makeDisplayController() {
         })
     }
 
+
+    function determineMark(space, element) {
+
+        if (!space.hasShip && !space.wasGuessed) return ' ';
+        if (space.hasShip && !space.wasGuessed) element.textContent = '.'
+        if (!space.hasShip && space.wasGuessed) element.textContent = '\u00B7';
+        if (space.hasShip && space.wasGuessed) addIcon(element, '#x-template')
+    }
+
     function determineText(space) {
-        if (!space.hasShip && !space.wasGuessed) return '.'
-        if (space.hasShip && !space.wasGuessed) return 'o'
-        if (!space.hasShip && space.wasGuessed) return 'm'
-        if (space.hasShip && space.wasGuessed) return 'X'
+        // bruh aint this middle dot
+        if (!space.hasShip && !space.wasGuessed) return ' ';
+        if (space.hasShip && !space.wasGuessed) return '.'
+        if (!space.hasShip && space.wasGuessed) return '\u00B7'
+        if (space.hasShip && space.wasGuessed) return 'x'
     }
 
     function determineCellStyle(space) {
@@ -631,13 +644,23 @@ function makeDisplayController() {
 
     // game code
 
+    function addIcon(el, iconSelector) {
+        const template = document.querySelector(iconSelector)
+        const clone = template.content.cloneNode(true)
+        el.appendChild(clone.children[0])
+    }
+
     // maybe set timeout for enemy... wait a bit
     function displayPlayerGameboard(gameboard) {
         let gameboardContainer = document.querySelector('.gameboard-container.right')
         gameboard.grid.map((row, rowIndex) => {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
             row.map((space) => {
-                populateElementInfo('div', determineText(space), rowElement, 'column')
+                // populateElementInfo('div', determineText(space), rowElement, 'column')
+                // let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column')
+                let spaceElement = populateElementInfo('div', null, rowElement, 'column')
+                console.log(space)
+                determineMark(space, spaceElement)
             })
         })
     }
@@ -648,18 +671,19 @@ function makeDisplayController() {
         gameboard.grid.map((row, rowIndex) => {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
             row.map((space, colIndex) => {
-                let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column',  determineCellStyle(space) )
+                // let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column',  determineCellStyle(space) )
+                let spaceElement = populateElementInfo('div', null, rowElement, 'column',  determineCellStyle(space) )
+                determineMark(space, spaceElement)
                 spaceElement.dataset.col = colIndex;
                 spaceElement.dataset.row = rowIndex;
             })
         })
     }
 
+    //hovering over the playable gameboard
     bodyElement.addEventListener('mouseover', (e) => {
-
         if (e.target.classList.contains('clickable')) {
             removeHoveredClass('game-hovering')
-            // not sure why this aint workin
             e.target.classList.add('game-hovering')
         }
     })

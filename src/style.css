@@ -98,8 +98,9 @@ body {
 .column {
     flex: 1;
     background-color: grey;
-    /* justify-content: center; */
     text-align: center;
+    line-height:50px;
+    font-size: 40px;
 }
 
 
