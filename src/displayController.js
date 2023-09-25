@@ -655,6 +655,16 @@ function makeDisplayController() {
         })
     }
 
+    bodyElement.addEventListener('mouseover', (e) => {
+
+        if (e.target.classList.contains('clickable')) {
+            removeHoveredClass('game-hovering')
+            // not sure why this aint workin
+            e.target.classList.add('game-hovering')
+        }
+    })
+
+
 
     function displayBothGameboards() {
         displayPlayerGameboard(gameController.getPlayerGameboard())
