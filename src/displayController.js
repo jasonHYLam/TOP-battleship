@@ -565,12 +565,18 @@ function makeDisplayController() {
         // then activate the play button
     }
 
+    function hidePopUp() {
+        document.querySelector('.popup').style.display = 'none'
+
+    }
+
     function activateStartButton() {
         const startButton = document.querySelector('.start-button')
         startButton.style.display = 'block'
         console.log(startButton)
 
         addToPlayerGameBoard();
+        hidePopUp();
         // i sincerely hope that this will populate player gameboard, i don't think it will thougth:
         displayBothGameboards();
     }
