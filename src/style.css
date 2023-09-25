@@ -34,7 +34,7 @@ body {
 }
 
 .pregame-space {
-    margin: 1px;
+    /* margin: 1px; */
     /* width: 30px;
     height: 30px; */
     border: black 1px solid;
@@ -96,11 +96,13 @@ body {
 }
 
 .column {
+    /* margin: 1px; */
     flex: 1;
     background-color: grey;
     text-align: center;
-    line-height:50px;
+    /* line-height:50px; */
     font-size: 40px;
+    box-sizing: border-box;
 }
 
 
@@ -139,5 +141,18 @@ body {
 }
 
 .game-hovering {
-    background-color: white;
+    /* background-color: white; */
+    /* border: 1px solid transparent; */
+    /* box-sizing: border-box;
+    display: block; */
+}
+
+
+.game-column {
+    border: 1px solid transparent;
+}
+
+.game-column:hover {
+    border: 1px solid aquamarine
+    
 }

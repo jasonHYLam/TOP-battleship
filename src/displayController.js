@@ -624,14 +624,6 @@ function makeDisplayController() {
         if (space.hasShip && space.wasGuessed) addIcon(element, '#x-template')
     }
 
-    function determineText(space) {
-        // bruh aint this middle dot
-        if (!space.hasShip && !space.wasGuessed) return ' ';
-        if (space.hasShip && !space.wasGuessed) return '.'
-        if (!space.hasShip && space.wasGuessed) return '\u00B7'
-        if (space.hasShip && space.wasGuessed) return 'x'
-    }
-
     function determineCellStyle(space) {
         if (!space.hasShip && !space.wasGuessed) return 'clickable'
         if (space.hasShip && !space.wasGuessed) return 'clickable'
