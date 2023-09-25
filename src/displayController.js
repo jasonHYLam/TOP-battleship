@@ -575,11 +575,18 @@ function makeDisplayController() {
         startButton.style.display = 'block'
         console.log(startButton)
 
-        addToPlayerGameBoard();
-        hidePopUp();
-        // i sincerely hope that this will populate player gameboard, i don't think it will thougth:
-        displayBothGameboards();
     }
+
+    bodyElement.addEventListener('click', (e) => {
+        if (e.target.classList.contains('start-button')) {
+            console.log('927')
+            addToPlayerGameBoard();
+            hidePopUp();
+            // i sincerely hope that this will populate player gameboard, i don't think it will thougth:
+            displayBothGameboards();
+        }
+
+    })
 
     function getLengthAndOrientationFromHeadClass(list) {
         return findShipFromClassListAndPerformAction(list, (ship) => {
