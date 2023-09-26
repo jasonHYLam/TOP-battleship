@@ -357,15 +357,19 @@ function makeDisplayController() {
                 showRotateIcon(e.target);
                 // may need to use extendHover. 
                 // dont think it's needed here... 
+                console.log('test if stuff happens when clicking ship head for first time')
                 extendMainHover(e.target)
+                console.log('test if hover is extended')
             }
 
 
             // this is to rotate the ship
             else if (currentlyRotating) {
                 // check if invalid or out of bounds for rotated placement
+                console.log('test if currently rotating')
                 if (checkInvalidPlacement(e.target)) return;
 
+                console.log('test valid palcement')
                 // and use placeShip which just converts hover into ship pieces
                 removeCurrentShipFromGrid();
                 removeSelectedShipDecoration();
@@ -585,8 +589,8 @@ function makeDisplayController() {
             console.log('927')
             addToPlayerGameBoard();
             hidePopUp();
-            // i sincerely hope that this will populate player gameboard, i don't think it will thougth:
             displayBothGameboards();
+            displayCurrentPlayer();
         }
 
     })
@@ -598,7 +602,6 @@ function makeDisplayController() {
                 shipList[ship].orientation,
             ]
         })
-
     }
 
     function addToPlayerGameBoard() {
@@ -617,11 +620,16 @@ function makeDisplayController() {
 
 
     function determineMark(space, element) {
-
         if (!space.hasShip && !space.wasGuessed) return ' ';
         if (space.hasShip && !space.wasGuessed) element.textContent = '.'
-        if (!space.hasShip && space.wasGuessed) element.textContent = '\u00B7';
-        if (space.hasShip && space.wasGuessed) addIcon(element, '#x-template')
+        if (!space.hasShip && space.wasGuessed) {
+            element.textContent = '\u00B7';
+            element.classList.add('incorrect-guess')
+        }
+        if (space.hasShip && space.wasGuessed) {
+            addIcon(element, '#x-template')
+            element.classList.add('correct-guess')
+        }
     }
 
     function determineCellStyle(space) {
@@ -630,9 +638,6 @@ function makeDisplayController() {
         if (!space.hasShip && space.wasGuessed) return 'unclickable'
         if (space.hasShip && space.wasGuessed) return 'unclickable'
     }
-
-    // also, make divs clickable in css. don't allow clicks on already clicked.
-    // make only the left gameboard clickable
 
     // game code
 
@@ -648,10 +653,7 @@ function makeDisplayController() {
         gameboard.grid.map((row, rowIndex) => {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
             row.map((space) => {
-                // populateElementInfo('div', determineText(space), rowElement, 'column')
-                // let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column')
                 let spaceElement = populateElementInfo('div', null, rowElement, 'column')
-                console.log(space)
                 determineMark(space, spaceElement)
             })
         })
@@ -663,7 +665,6 @@ function makeDisplayController() {
         gameboard.grid.map((row, rowIndex) => {
             let rowElement = populateElementInfo('div', null, gameboardContainer, 'row');
             row.map((space, colIndex) => {
-                // let spaceElement = populateElementInfo('div', determineText(space), rowElement, 'column',  determineCellStyle(space) )
                 let spaceElement = populateElementInfo('div', null, rowElement, 'column', 'game-column', determineCellStyle(space) )
                 determineMark(space, spaceElement)
                 spaceElement.dataset.col = colIndex;
@@ -671,16 +672,6 @@ function makeDisplayController() {
             })
         })
     }
-
-    //hovering over the playable gameboard
-    bodyElement.addEventListener('mouseover', (e) => {
-        if (e.target.classList.contains('game-column')) {
-            removeHoveredClass('game-hovering')
-            e.target.classList.add('game-hovering')
-        }
-    })
-
-
 
     function displayBothGameboards() {
         displayPlayerGameboard(gameController.getPlayerGameboard())
@@ -692,9 +683,11 @@ function makeDisplayController() {
         gameboardContainers.forEach(container => container.textContent = "")
     }
 
-    function getClickables() {
-
-        return document.querySelectorAll('.clickable')
+    function displayCurrentPlayer() {
+        let currentPlayer = gameController.getCurrentPlayer().name
+        console.log(currentPlayer)
+        const textBox = document.querySelector('.text-div')
+        textBox.textContent = (currentPlayer)
     }
 
     // the game loop is here
@@ -729,13 +722,22 @@ function makeDisplayController() {
             gameController.playRound([parseInt(space.col), parseInt(space.row)])
             removeBothGameBoards();
             displayBothGameboards();
+            displayCurrentPlayer();
 
             if (checkIfGameOver()) setGameOver()
             else {
-                console.log('b')
+                // why does timeout seem to not happen, and this stuff happens instantly
+                setTimeout(() => {
+                    console.log('time out test')
+
                 gameController.playRound();
                 removeBothGameBoards();
                 displayBothGameboards();
+                displayCurrentPlayer();
+                }, 1000)
+                // gameController.playRound();
+                // removeBothGameBoards();
+                // displayBothGameboards();
             }
         }
     })

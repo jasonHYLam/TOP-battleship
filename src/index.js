@@ -1,11 +1,4 @@
-// import '@fortawesome/fontawesome-free/js/fontawesome'
-// import '@fortawesome/fontawesome-free/js/solid'
-// import '@fortawesome/fontawesome-free/js/regular'
-// import '@fortawesome/fontawesome-free/js/brands'
-
 import { makeGameController } from "./gameController";
 import "./style.css";
 import { makeDisplayController } from "./displayController";
-
-console.log('uh hello?')
 makeDisplayController();

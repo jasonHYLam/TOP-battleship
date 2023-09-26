@@ -9,7 +9,6 @@ class Space {
     }
 }
 
-// not sure where to put this but need to be careful about ordinate order; col,row vs row, col
 // use col,row for method arguments and pushing into variables like guessedCoords
 // use row, col for gameboard logic
 class Gameboard {
@@ -37,13 +36,7 @@ class Gameboard {
     }
 
     checkIfAlreadyPlaced(col, row) {
-        // console.log(col, row)
-        // so are hasShip not true?
-        // this.grid, is it different to computerGameboard
-        // is this.grid[row][col] a space?
-        // console.log(this.grid[row][col])
         if (this.grid[row][col].hasShip === true) return true;
-        // somehow this is not working as expected
         return false;
     }
 
@@ -66,7 +59,6 @@ class Gameboard {
             case 'horizontal':
                 //loop for length and check if out of bounds or already occupied; if so cancel execution
                 for (let i = 0; i< length; i++) {
-                    console.log(startCol + i, startRow)
                     if (this.isOutOfBounds(startCol + i, startRow))  {
                         invalidPlacement = true;
                         return;
@@ -89,8 +81,6 @@ class Gameboard {
                 break
 
             // if orientation is vertical
-            // ship is created from bottom to top
-            // row[0] is bottom, row[9] to top, due to the `9 - `
             case 'vertical':
                 for (let i = 0; i< length; i++) {
                     if (this.isOutOfBounds(startCol, startRow + i)) {
@@ -140,12 +130,6 @@ class Gameboard {
     checkIsGameOver() {
         let convertedAllShipCoords = this.allShipCoords.map(coord => JSON.stringify(coord))
         let convertedGuessedCoords = this.guessedCoords.map(coord =>JSON.stringify(coord))
-        console.log(convertedAllShipCoords)
-        console.log(convertedGuessedCoords)
-        // if (convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))) {
-        //     this.isGameOver = true;
-        // }
-        console.log(convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord)))
         return convertedAllShipCoords.every(shipCoord => convertedGuessedCoords.includes(shipCoord))
     }
 
@@ -163,10 +147,6 @@ class Gameboard {
             this.getShip(col, row).hit()
             // then check if ship is sunk
             this.getShip(col, row).isSunk();
-
-            // then check if all ships are hit, by comparing allShipCoords and guessedCoords arrays 
-            // this.checkIsGameOver();
-
         }
         // if there isn't a ship, then mark the place with missedHit
         else {

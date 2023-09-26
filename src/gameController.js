@@ -17,6 +17,9 @@ export function makeGameController() {
     const computer = new Computer();
 
     let currentPlayer = player;
+
+    const getCurrentPlayer = () => currentPlayer;
+
     let enemyGameboard = computerGameboard
 
     let isGameOver = false;
@@ -25,10 +28,7 @@ export function makeGameController() {
 
     function tryRandomPlacementUntilSuccess(length) {
         // get reference to gameboard; 
-        // maybe if not successful, oldShipCoords becomes this... phooey
         let oldShipCoords = JSON.stringify(getComputerGameboard().allShipCoords)
-        // console.log(oldShipCoords)
-        // get reference to new gameboard
         let newShipCoords = oldShipCoords
         // get random orientation and random column and row, both between 0 and 9
         function generateRandomOrientation() {
@@ -42,42 +42,20 @@ export function makeGameController() {
             return [randomCol, randomRow]
         }
         let isValidPlacement = false
-        // have isValidPlacement set to false
-        // while (!isValidPlacement) {
-            // if vertical
-            // place ship
-            // if oldGameboard's has Ship !== newGameboard's has Ship then set validplacement
-        // }
 
         while (!isValidPlacement) {
             if (generateRandomOrientation() === 'horizontal') {
-                console.log('try horizontal placement')
                 getComputerGameboard().placeShip(length, 'horizontal', generateRandomCoordinates())
                 newShipCoords = JSON.stringify(getComputerGameboard().allShipCoords)
-                // console.log(`new ship coords: ${newShipCoords}`)
-                // console.log(newShipCoords)
                 if (oldShipCoords !== newShipCoords) isValidPlacement = true;
-                console.log(isValidPlacement)
             }
             else if (generateRandomOrientation() === 'vertical') {
-                console.log('try vertical placement')
                 getComputerGameboard().placeShip(length, 'vertical', generateRandomCoordinates())
                 newShipCoords = JSON.stringify(getComputerGameboard().allShipCoords)
-                // console.log(`new ship coords: ${newShipCoords}`)
-                // console.log(newShipCoords)
                 if (oldShipCoords !== newShipCoords) isValidPlacement = true;
-                console.log(isValidPlacement)
             }
         }
     }
-
-    // somehow, i'll need to get the grid placed ships, and convert them into this.
-    // wait, is this mocking? it may be worth a read again...
-    // playerGameboard.placeShip(5, 'vertical', [9,6]);
-    // playerGameboard.placeShip(4, 'horizontal', [0,8]);
-    // playerGameboard.placeShip(3, 'vertical', [5,6]);
-    // playerGameboard.placeShip(3, 'horizontal', [2,3]);
-    // playerGameboard.placeShip(2, 'vertical', [1,2]);
 
     function placeAllShipsOnComputerBoard() {
         tryRandomPlacementUntilSuccess(5)
@@ -89,7 +67,6 @@ export function makeGameController() {
 
     placeAllShipsOnComputerBoard();
 
-    // maybe i need to change this? maybe not!
     function swapPlayerAndEnemy() {
         currentPlayer === player ? currentPlayer = computer : currentPlayer = player;
         enemyGameboard === playerGameboard ? enemyGameboard = computerGameboard : enemyGameboard = playerGameboard;
@@ -100,26 +77,11 @@ export function makeGameController() {
         if (gameboard.checkIsGameOver()) isGameOver = true;
     }
 
-    const getIsGameOver= () => isGameOver
+    const getIsGameOver = () => isGameOver
     
-    function visualiseGameboard(gameboard) {
-        // how do i convert the gameboard with the spaces, into a console log?
-        // maybe a double map
-        gameboard.grid.map(row => {
-            console.log(
-            row.map(space => {
-                if(space.hasShip === false && space.wasGuessed === false) return '_'
-                else if (space.hasShip === false && space.wasGuessed === true) return 'm'
-                else if (space.hasShip === true && space.wasGuessed === false) return 'o'
-                else if (space.hasShip === true && space.wasGuessed === true) return 'x'
-            }
-            )
-                )
-        })
-    }
 
     function tryRandomAttackUntilSuccess() {
-
+        if (currentPlayer.name  !== 'Computer') return
         let initialGuesses = JSON.stringify(enemyGameboard.guessedCoords)
         let currentGuesses = initialGuesses;
         let validPlayMade = false;
@@ -130,23 +92,30 @@ export function makeGameController() {
         }
     }
 
-    function playRound(coords=null) {
+    function playRound(coords = null) {
+        console.log('new turn!')
+        console.log(currentPlayer)
 
         switch (currentPlayer) {
             case player:
-                console.log('player')
-                // visualiseGameboard(enemyGameboard);
                 currentPlayer.attack(enemyGameboard,coords)
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
                 break;
             
             case computer:
-                console.log('computer')
-                // visualiseGameboard(enemyGameboard);
+                // this happens instantly, why
+
+                // setTimeout(() => {
                 tryRandomAttackUntilSuccess();
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
+                // },
+                // 2000
+                // )
+                // tryRandomAttackUntilSuccess();
+                // checkIsGameOver(enemyGameboard);
+                // swapPlayerAndEnemy();
                 break;
             }
         }
@@ -156,5 +125,7 @@ export function makeGameController() {
             getPlayerGameboard,
             getComputerGameboard,
             getIsGameOver,
+            getCurrentPlayer,
+
         }
 }

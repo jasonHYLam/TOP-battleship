@@ -1,5 +1,7 @@
 export class Player {
-    constructor(computer) {
+    // constructor(computer) {
+    constructor(name) {
+        this.name = 'Player';
     }
 
     attack(gameboard, [col, row]) {
@@ -10,6 +12,7 @@ export class Player {
 export class Computer extends Player {
     constructor() {
         super()
+        this.name = 'Computer'
     }
 
     randomAttack(gameboard) {
