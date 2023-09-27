@@ -28,6 +28,7 @@ class Gameboard {
         this.grid = createGrid();
         this.allShipCoords = [];
         this.guessedCoords = [];
+        this.sunkShipCoords = [];
     }
 
     isOutOfBounds(col, row) {
@@ -147,6 +148,9 @@ class Gameboard {
             this.getShip(col, row).hit()
             // then check if ship is sunk
             this.getShip(col, row).isSunk();
+
+            if (this.getShip(col, row).sunk) {}
+
         }
         // if there isn't a ship, then mark the place with missedHit
         else {

@@ -170,3 +170,7 @@ i {
 .incorrect-guess {
     border: 1px solid orangered;
 }
+
+.sunk-ship {
+    background-color: var(--strong-accent);
+}

@@ -93,19 +93,19 @@ export function makeGameController() {
     }
 
     function playRound(coords = null) {
-        console.log('new turn!')
-        console.log(currentPlayer)
 
         switch (currentPlayer) {
             case player:
                 currentPlayer.attack(enemyGameboard,coords)
                 checkIsGameOver(enemyGameboard);
+                if (isGameOver) break;
                 swapPlayerAndEnemy();
                 break;
             
             case computer:
                 tryRandomAttackUntilSuccess();
                 checkIsGameOver(enemyGameboard);
+                if (isGameOver) break;
                 swapPlayerAndEnemy();
                 break;
             }

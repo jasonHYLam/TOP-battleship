@@ -304,11 +304,6 @@ function makeDisplayController() {
     }
 
     // clicking on spaces on grid
-
-    // i need to not add stuff when there's a element too close... do i need to use row and column?
-    //maybe
-    // check if can place..
-
     function decorateSelectedShip(clickTarget) {
         function decorate(shipName) {
             const grid = document.querySelector('.initial-grid')
@@ -319,7 +314,6 @@ function makeDisplayController() {
         findShipFromClassListAndPerformAction(clickTarget.classList, decorate)
     }
 
-    // will need a removeDecoration function 
     function removeSelectedShipDecoration() {
         document.querySelectorAll(`.selected-ship-on-grid`).forEach(space => {
             space.classList.remove('selected-ship-on-grid')
@@ -349,27 +343,19 @@ function makeDisplayController() {
 
             // this is to set to rotate/move mode
             if (!currentlyRotating) {
-                console.log('ship head CLICKED and in NOW in rotate mode')
                 setToCurrentlyRotating();
                 setMovingShipToTrue()
                 setCorrespondingShipFromGrid(e.target)
                 decorateSelectedShip(e.target)
                 showRotateIcon(e.target);
-                // may need to use extendHover. 
-                // dont think it's needed here... 
-                console.log('test if stuff happens when clicking ship head for first time')
                 extendMainHover(e.target)
-                console.log('test if hover is extended')
             }
 
 
             // this is to rotate the ship
             else if (currentlyRotating) {
                 // check if invalid or out of bounds for rotated placement
-                console.log('test if currently rotating')
                 if (checkInvalidPlacement(e.target)) return;
-
-                console.log('test valid palcement')
                 // and use placeShip which just converts hover into ship pieces
                 removeCurrentShipFromGrid();
                 removeSelectedShipDecoration();
@@ -378,16 +364,11 @@ function makeDisplayController() {
                 placeShip(e.target);
                 // this is where i need to remove current ship 
 
-                // use toggleCurrentShipRotation
-                // and maybe resetCurrentShip
                 removeAllHovered();
-                console.log(getCurrentShipOrientation())
                 toggleCurrentShipOrientation();
-                console.log(getCurrentShipOrientation())
                 resetCurrentShip();
                 disableCurrentlyRotating();
                 setMovingShipToFalse();
-                console.log('ship head CLICKED and disable rotate mode and reset current ship')
             }
         }
     })
@@ -443,11 +424,9 @@ function makeDisplayController() {
             //move existing ship
             if (checkIfMovingShip()) {
 
-                console.log('ship is MOVING')
                 //ship head is not clicked
                 if (!checkIfClickShipHead(e.target)) {
                     
-                    console.log('ship head NOT clicked, ship is moving')
                     removeShipHead();
                     removeRotateIcon()
                     removeSelectedShipDecoration();
@@ -465,13 +444,11 @@ function makeDisplayController() {
             
                 // ship head is clicked... this should not do anything btw
                 else if (checkIfClickShipHead(e.target)) {
-                    console.log('ship head was clicked')
                 }
             }
 
             //place ship for the first time
             else {
-                console.log('ship NOT moving, placing for the first time')
                 greyOutSelectedShip();
                 removeClassFromPreviouslySelected();
 
@@ -496,9 +473,6 @@ function makeDisplayController() {
         const length = getCurrentShipLength();
         const headRow = parseInt(clickTarget.dataset.row)
         const headCol = parseInt(clickTarget.dataset.col)
-
-        console.log(getCurrentShipOrientation())
-        console.log(currentlyRotating)
 
         // requires checking if currently rotating; if so, check the opposite orientation
         if (getCurrentShipOrientation() === 'horizontal'&& !currentlyRotating
@@ -554,8 +528,8 @@ function makeDisplayController() {
             removeClassFromPreviouslySelected();
             removeAllHovered();
             (list.add('selected-ship-off-grid'))
+
             setCurrentShipFromDOM(e.target)
-            console.log(currentShip)
             if (list.contains('grey-out')) {
                 removeShipHead();
                 removeCorrespondingShipFromGridForAllShips(e.target);
@@ -590,13 +564,11 @@ function makeDisplayController() {
 
     bodyElement.addEventListener('click', (e) => {
         if (e.target.classList.contains('start-button')) {
-            console.log('927')
             addToPlayerGameBoard();
             hidePopUp();
             displayBothGameboards();
             displayCurrentPlayer();
         }
-
     })
 
     function getLengthAndOrientationFromHeadClass(list) {
@@ -621,7 +593,6 @@ function makeDisplayController() {
             )
         })
     }
-
 
     function determineMark(space, element) {
         if (!space.hasShip && !space.wasGuessed) return ' ';
@@ -650,8 +621,16 @@ function makeDisplayController() {
         const clone = template.content.cloneNode(true)
         el.appendChild(clone.children[0])
     }
+    
+    function determineIfSunk(space, element) {
+        if (space.ship) {
+            if (space.ship.sunk) {
+                console.log('uh huh yea yea yea')
+                element.classList.add('sunk-ship')
+            }
+        }
+    }
 
-    // maybe set timeout for enemy... wait a bit
     function displayPlayerGameboard(gameboard) {
         let gameboardContainer = document.querySelector('.gameboard-container.right')
         gameboard.grid.map((row, rowIndex) => {
@@ -659,6 +638,7 @@ function makeDisplayController() {
             row.map((space) => {
                 let spaceElement = populateElementInfo('div', null, rowElement, 'column')
                 determineMark(space, spaceElement)
+                determineIfSunk(space, spaceElement)
             })
         })
     }
@@ -671,6 +651,7 @@ function makeDisplayController() {
             row.map((space, colIndex) => {
                 let spaceElement = populateElementInfo('div', null, rowElement, 'column', 'game-column', determineCellStyle(space) )
                 determineMark(space, spaceElement)
+                determineIfSunk(space, spaceElement)
                 spaceElement.dataset.col = colIndex;
                 spaceElement.dataset.row = rowIndex;
             })
@@ -691,21 +672,12 @@ function makeDisplayController() {
 
     function displayCurrentPlayer() {
         let currentPlayer = gameController.getCurrentPlayer().name
-        // const textBox = document.querySelector('.text-div')
         getTextBox().textContent = `${currentPlayer}'s turn!`
     }
 
     // the game loop is here
 
-    // would i need to consider a future 2 player version?
-
     createPreGameGrid();
-    // displayBothGameboards();
-    // but these need playerGameboard and computerGameboard... 
-    // figure it out from tic tac toe...
-    // for each of these spaces
-    // if clicked, then play a round
-    // this means using attack, using the coordinates... i possibly need to add data.col and data.row... okay
 
     function checkIfGameOver() {
         return gameController.getIsGameOver() ? true : false;
@@ -723,7 +695,6 @@ function makeDisplayController() {
             el.classList.add('unclickable')
         })
         displayGameOverText();
-
     }
 
 
@@ -737,18 +708,12 @@ function makeDisplayController() {
 
             if (checkIfGameOver()) setGameOver()
             else {
-                // why does timeout seem to not happen, and this stuff happens instantly
                 setTimeout(() => {
-                    console.log('time out test')
-
-                gameController.playRound();
-                removeBothGameBoards();
-                displayBothGameboards();
-                displayCurrentPlayer();
+                    gameController.playRound();
+                    removeBothGameBoards();
+                    displayBothGameboards();
+                    displayCurrentPlayer();
                 }, 1000)
-                // gameController.playRound();
-                // removeBothGameBoards();
-                // displayBothGameboards();
             }
         }
     })
