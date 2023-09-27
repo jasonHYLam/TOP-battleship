@@ -4,10 +4,9 @@
 
 ![image](https://github.com/prodijay777/TOP-battleship/assets/105083538/2e651224-3552-4c35-be6e-962f69f29e25)
 
-Live link: https://prodijay777.github.io/TOP-battleship/
-
-The intent of this project was to learn how to use Jest. I felt that this was achieved, however I could have benefitted by learning how to mock tests a little more.
-
+Live link: https://prodijay777.github.io/TOP-battleship/  
+  
+The intent of this project was to learn how to use Jest. I felt that this was achieved, however I could have benefitted by learning how to mock tests a little more.  
 I was a little rusty with connecting DOM and game logic, so much of the project was spent trying to figure out how to manipulate the DOM, such as flipping the ship orientation, and replacing ships. If I revisit this project, I'd like to decouple this code and separate concerns more cleanly.
 
 ## What I've Learned
