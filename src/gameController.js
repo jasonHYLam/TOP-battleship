@@ -104,18 +104,9 @@ export function makeGameController() {
                 break;
             
             case computer:
-                // this happens instantly, why
-
-                // setTimeout(() => {
                 tryRandomAttackUntilSuccess();
                 checkIsGameOver(enemyGameboard);
                 swapPlayerAndEnemy();
-                // },
-                // 2000
-                // )
-                // tryRandomAttackUntilSuccess();
-                // checkIsGameOver(enemyGameboard);
-                // swapPlayerAndEnemy();
                 break;
             }
         }

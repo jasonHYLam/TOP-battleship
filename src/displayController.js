@@ -295,8 +295,8 @@ function makeDisplayController() {
 
     function removeShipHead() {
         const currentShipHead = document.querySelector(`.ship-head.${getCurrentShip()}`);
+        console.log(currentShipHead)
         if (currentShipHead) currentShipHead.classList.remove('ship-head')
-        // document.querySelector(`.ship-head.${getCurrentShip()}`).classList.remove('ship-head')
     }
 
     function checkIfClickShipHead(clickTarget) {
@@ -550,12 +550,16 @@ function makeDisplayController() {
     bodyElement.addEventListener('click', (e) => {
         let list = e.target.classList
         if (list.contains('ship')) {
-            if (list.contains('grey-out')) removeCorrespondingShipFromGridForAllShips(e.target);
+            // need to get currentShip
             removeClassFromPreviouslySelected();
-            removeShipHead()
             removeAllHovered();
             (list.add('selected-ship-off-grid'))
             setCurrentShipFromDOM(e.target)
+            console.log(currentShip)
+            if (list.contains('grey-out')) {
+                removeShipHead();
+                removeCorrespondingShipFromGridForAllShips(e.target);
+            }
         }
     })
 
@@ -683,11 +687,12 @@ function makeDisplayController() {
         gameboardContainers.forEach(container => container.textContent = "")
     }
 
+    function getTextBox() {return document.querySelector('.text-div')}
+
     function displayCurrentPlayer() {
         let currentPlayer = gameController.getCurrentPlayer().name
-        console.log(currentPlayer)
-        const textBox = document.querySelector('.text-div')
-        textBox.textContent = (currentPlayer)
+        // const textBox = document.querySelector('.text-div')
+        getTextBox().textContent = `${currentPlayer}'s turn!`
     }
 
     // the game loop is here
@@ -706,6 +711,10 @@ function makeDisplayController() {
         return gameController.getIsGameOver() ? true : false;
     }
 
+    function displayGameOverText() {
+        getTextBox().textContent = `${gameController.getCurrentPlayer().name} has won!`
+    }
+
     // maybe disable all? turn all clickables into unclickable
     function setGameOver() {
         const enemyGrid = document.querySelectorAll('.clickable')
@@ -713,6 +722,8 @@ function makeDisplayController() {
             el.classList.remove('clickable')
             el.classList.add('unclickable')
         })
+        displayGameOverText();
+
     }
 
 
