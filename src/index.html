@@ -15,21 +15,36 @@
     </template>
     <div class="popup">
         <div class="pregame-container">
-            <div class ="initial-grid"></div>
-            <div class="ship-container">
-                <div data-length="5" class="carrier ship"></div>
-                <div data-length="4" class="battleship ship"></div>
-                <div data-length="3" class="cruiser ship"></div>
-                <div data-length="3" class="submarine ship"></div>
-                <div data-length="2" class="destroyer ship"></div>
+            <div class="left">
+                <div class ="initial-grid"></div>
             </div>
-            <div class="start-button">start game</div>
+            <div class="right">
+                <div class="top">
+                    <div class="ship-container">
+                        <div data-length="5" class="carrier ship"></div>
+                        <div data-length="4" class="battleship ship"></div>
+                        <div data-length="3" class="cruiser ship"></div>
+                        <div data-length="3" class="submarine ship"></div>
+                        <div data-length="2" class="destroyer ship"></div>
+                    </div>
+                </div>
+
+                <div class="bottom">
+                    <div class="info-text">PLACE SHIPS</div>
+                    <div class="start-button">PLAY</div>
+                </div>
+            </div>
         </div>
         <!-- <div class="blocker"></div> -->
     </div>
     <div class="container">
-    <div class="gameboard-container left"></div>
-    <div class="gameboard-container right"></div>
+        <div class="left-container">
+            <div class="gameboard-container left"></div>
+
+        </div>
+        <div class="right-container">
+            <div class="gameboard-container right"></div>
+        </div>
     </div>
     <div class="text-div"></div>
 </body>

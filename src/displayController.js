@@ -552,6 +552,10 @@ function makeDisplayController() {
 
     function hidePopUp() {
         document.querySelector('.popup').style.display = 'none'
+    }
+
+    function showGame() {
+        document.querySelector('.container').style.display = 'flex';
 
     }
 
@@ -566,6 +570,7 @@ function makeDisplayController() {
         if (e.target.classList.contains('start-button')) {
             addToPlayerGameBoard();
             hidePopUp();
+            showGame();
             displayBothGameboards();
             displayCurrentPlayer();
         }
@@ -596,7 +601,7 @@ function makeDisplayController() {
 
     function determineMark(space, element) {
         if (!space.hasShip && !space.wasGuessed) return ' ';
-        if (space.hasShip && !space.wasGuessed) element.textContent = '.'
+        if (space.hasShip && !space.wasGuessed) element.textContent = ' '
         if (!space.hasShip && space.wasGuessed) {
             element.textContent = '\u00B7';
             element.classList.add('incorrect-guess')
@@ -672,7 +677,7 @@ function makeDisplayController() {
 
     function displayCurrentPlayer() {
         let currentPlayer = gameController.getCurrentPlayer().name
-        getTextBox().textContent = `${currentPlayer}'s turn!`
+        getTextBox().textContent = `${currentPlayer.toUpperCase()}`
     }
 
     // the game loop is here
@@ -684,7 +689,7 @@ function makeDisplayController() {
     }
 
     function displayGameOverText() {
-        getTextBox().textContent = `${gameController.getCurrentPlayer().name} has won!`
+        getTextBox().textContent = `${gameController.getCurrentPlayer().name.toUpperCase()} HAS WON ^-^`
     }
 
     // maybe disable all? turn all clickables into unclickable
